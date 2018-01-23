@@ -11,9 +11,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
 
-public class TeletoryWorldProvider extends WorldProvider {
+public class RiftsWorldProvider extends WorldProvider {
 
-	public TeletoryWorldProvider() {
+	public RiftsWorldProvider() {
 		this.biomeProvider = new BiomeProviderSingle(Biomes.VOID);
 		this.hasSkyLight = false;
 	}
@@ -30,7 +30,7 @@ public class TeletoryWorldProvider extends WorldProvider {
 
 	@Override
 	public IChunkGenerator createChunkGenerator() {
-		return new TeletoryChunkProvider(world, world.getSeed());
+		return new RiftsChunkProvider(world, world.getSeed());
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class TeletoryWorldProvider extends WorldProvider {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean doesXZShowFog(int par1, int par2) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class TeletoryWorldProvider extends WorldProvider {
 
 	@Override
 	public boolean hasSkyLight() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -72,17 +72,17 @@ public class TeletoryWorldProvider extends WorldProvider {
 
 	@Override
 	public boolean isDaytime() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public float getSunBrightness(float par1) {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public float getStarBrightness(float par1) {
-		return 0;
+		return 1;
 	}
 
 	@Override

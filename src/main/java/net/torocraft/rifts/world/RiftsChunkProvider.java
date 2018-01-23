@@ -3,10 +3,7 @@ package net.torocraft.rifts.world;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Nullable;
-
-import net.minecraft.block.BlockDirt;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
@@ -16,18 +13,13 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.NoiseGeneratorOctaves;
 
-public class TeletoryChunkProvider implements IChunkGenerator {
+public class RiftsChunkProvider implements IChunkGenerator {
 
 	private final World world;
 	private final Random random;
 
-	private final NoiseGeneratorOctaves noise1;
-	private double[] noiseBuffer;
-
 	private final int xSize = 16;
-	private final int ySize = surfaceThickness;
 	private final int zSize = 16;
 
 	private final int xScale = 5;
@@ -37,24 +29,11 @@ public class TeletoryChunkProvider implements IChunkGenerator {
 	private final int yOffset = 0;
 
 	private final IBlockState base;
-	private final IBlockState dirt;
-	private final IBlockState ore;
-	private final IBlockState bush;
 
-	public static final int surfaceHeight = 8;
-	public static final int surfaceThickness = 5;
-	public static final int dirtHeight = surfaceHeight + surfaceThickness - 2;
-
-	private IBlockState block;
-
-	public TeletoryChunkProvider(World worldIn, long seed) {
+	public RiftsChunkProvider(World worldIn, long seed) {
 		world = worldIn;
 		random = new Random(seed);
-		noise1 = new NoiseGeneratorOctaves(random, 8);
 		base = Blocks.END_STONE.getDefaultState();
-		dirt = Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.COARSE_DIRT);
-		ore = Blocks.IRON_ORE.getDefaultState();
-		bush = Blocks.DEADBUSH.getDefaultState();
 	}
 
 	@Override
@@ -62,52 +41,21 @@ public class TeletoryChunkProvider implements IChunkGenerator {
 		ChunkPrimer chunkprimer = new ChunkPrimer();
 		int xOffset = chunkX * 16;
 		int zOffset = chunkZ * 16;
-		noiseBuffer = noise1.generateNoiseOctaves(noiseBuffer, xOffset, yOffset, zOffset, xSize, ySize, zSize, xScale, yScale, zScale);
-		drawNoise(chunkprimer);
+		drawChunk(chunkX, chunkZ, chunkprimer);
 		return createChunk(chunkX, chunkZ, chunkprimer);
 	}
 
-	private void drawNoise(ChunkPrimer chunkprimer) {
-		int pointer = 0;
+	private void drawChunk(int chunkX, int chunkZ, ChunkPrimer chunkprimer) {
+		if (chunkX % 2 == 0 || chunkZ % 2 == 0) {
+			return;
+		}
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
-				for (int y = 0; y < surfaceThickness; y++) {
-					// if (noiseBuffer[pointer] > (60d - (10 * (surfaceThickness
-					// - y)))) {
-					if (noiseBuffer[pointer] > (70d - (8 * (surfaceThickness - y)))) {
-						setBlock(chunkprimer, x, y + surfaceHeight, z);
-					}
-					pointer++;
+				for (int y = 10; y < 11; y++) {
+					chunkprimer.setBlockState(x, y, z, base);
 				}
 			}
 		}
-	}
-
-	protected void setBlock(ChunkPrimer chunkprimer, int x, int y, int z) {
-
-		if (y >= dirtHeight) {
-			if (isAir(chunkprimer, x, y - 1, z)) {
-				block = base;
-			} else {
-				block = dirt;
-			}
-		} else {
-			if (random.nextInt(100) > 85) {
-				block = ore;
-			} else {
-				block = base;
-			}
-		}
-
-		chunkprimer.setBlockState(x, y, z, block);
-
-		if (block == dirt && random.nextInt(100) > 80) {
-			chunkprimer.setBlockState(x, y + 1, z, bush);
-		}
-	}
-
-	protected boolean isAir(ChunkPrimer chunkprimer, int x, int y, int z) {
-		return chunkprimer.getBlockState(x, y, z) == null || chunkprimer.getBlockState(x, y, z) == Blocks.AIR.getDefaultState();
 	}
 
 	private Chunk createChunk(int chunkX, int chunkZ, ChunkPrimer chunkprimer) {
@@ -116,6 +64,7 @@ public class TeletoryChunkProvider implements IChunkGenerator {
 		return chunk;
 	}
 
+	@Override
 	public void populate(int chunkX, int chunkZ) {
 		net.minecraft.block.BlockFalling.fallInstantly = true;
 		setChunkSeed(chunkX, chunkZ);
@@ -131,10 +80,12 @@ public class TeletoryChunkProvider implements IChunkGenerator {
 		random.setSeed((long) chunkX * k + (long) chunkZ * l ^ this.world.getSeed());
 	}
 
+	@Override
 	public boolean generateStructures(Chunk chunkIn, int x, int z) {
 		return false;
 	}
 
+	@Override
 	public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
 		return new ArrayList<>(0);
 	}
@@ -145,6 +96,7 @@ public class TeletoryChunkProvider implements IChunkGenerator {
 		return null;
 	}
 
+	@Override
 	public void recreateStructures(Chunk chunkIn, int x, int z) {
 
 	}

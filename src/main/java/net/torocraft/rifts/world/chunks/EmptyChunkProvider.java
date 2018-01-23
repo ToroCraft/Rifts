@@ -1,4 +1,4 @@
-package net.torocraft.rifts.world;
+package net.torocraft.rifts.world.chunks;
 
 import java.util.Collections;
 import java.util.List;

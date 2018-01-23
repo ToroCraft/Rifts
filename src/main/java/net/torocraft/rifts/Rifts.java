@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.torocraft.rifts.util.Timer;
-import net.torocraft.rifts.world.TeletoryWorldProvider;
+import net.torocraft.rifts.world.RiftsWorldProvider;
 
 @Mod(modid = Rifts.MODID, name = Rifts.MODNAME, version = Rifts.VERSION)
 public class Rifts {
@@ -21,9 +21,9 @@ public class Rifts {
 	public static final String VERSION = "1.12.2-1";
 	public static final String MODNAME = "Rifts";
 	public static final int RIFT_DIM_ID = 13;
-	public static final DimensionType RIFT_DIM_TYPE = DimensionType.register("torocraft_rifts", "_rifts", RIFT_DIM_ID, TeletoryWorldProvider.class, true);
+	public static final DimensionType RIFT_DIM_TYPE = DimensionType.register("torocraft_rifts", "_rifts", RIFT_DIM_ID, RiftsWorldProvider.class, true);
 
-	@SidedProxy(clientSide = "net.torocraft.rifts.ClientProxy", serverSide = "net.torocraft.rifts.ServerProxy")
+	@SidedProxy(clientSide = "net.torocraft.rifts.ClientProxy")
 	public static CommonProxy proxy;
 
 	@Instance(value = Rifts.MODID)
