@@ -1,32 +1,25 @@
 package net.torocraft.rifts.util;
 
 import java.lang.reflect.Field;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
+import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.teleporter.RiftTeleporter;
 
-public class Util {
-	public static Block getBlock(IBlockAccess world, int i, int j, int k) {
-		return world.getBlockState(new BlockPos(i, j, k)).getBlock();
-	}
+public class DimensionUtil {
 
-	public static int getNextDimension(Entity entity) {
-		if (entity.dimension != RiftDimension.DIM_ID) {
-			return RiftDimension.DIM_ID;
+	public static void changeEntityDimension(final Entity entity, int dimId) {
+		if (entity instanceof EntityPlayerMP) {
+			EntityPlayerMP player = (EntityPlayerMP) entity;
+			Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, dimId));
 		} else {
-			return 0;
+			// TODO: support teleporting non-players
 		}
 	}
 
-	public static void changePlayerDimension(EntityPlayerMP player, int dimId) {
-
-		System.out.println("changePlayerDimension");
-
+	private static void changePlayerDimension(EntityPlayerMP player, int dimId) {
 		if (!net.minecraftforge.common.ForgeHooks.onTravelToDimension(player, dimId)) {
 			return;
 		}
@@ -42,7 +35,7 @@ public class Util {
 		player.timeUntilPortal = 10;
 		player.mcServer.getPlayerList().transferPlayerToDimension(player, dimId, teleporter);
 		resetStatusFields(player);
-		// setInvulnerableDimensionChange(player, false);
+		setInvulnerableDimensionChange(player, false);
 	}
 
 	private static void resetStatusFields(EntityPlayerMP player) {
@@ -68,7 +61,7 @@ public class Util {
 		}
 	}
 
-	public static Field getReflectionField(String... names) {
+	private static Field getReflectionField(String... names) {
 		Field f;
 		for (String name : names) {
 			f = getFieldFromPlayer(name);

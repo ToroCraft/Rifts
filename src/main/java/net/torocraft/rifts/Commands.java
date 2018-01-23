@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.torocraft.rifts.util.RiftDimension;
+import net.torocraft.rifts.util.DimensionUtil;
 
 public class Commands extends CommandBase {
 
@@ -69,7 +69,7 @@ public class Commands extends CommandBase {
 		World world = player.world;
 		int riftId = i(args[1]);
 
-		RiftDimension.changeEntityDimension(player);
+		DimensionUtil.changeEntityDimension(player, Rifts.RIFT_DIM_ID);
 	}
 
 	private int senderDimId(ICommandSender sender) {
