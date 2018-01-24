@@ -21,6 +21,7 @@ gradlew
 gradlew.bat
 classes/
 logs/
+hs_err_*
 
 # other
 eclipse
