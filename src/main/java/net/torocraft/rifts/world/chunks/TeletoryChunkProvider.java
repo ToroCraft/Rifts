@@ -73,8 +73,6 @@ public class TeletoryChunkProvider implements IChunkGenerator {
     for (int x = 0; x < 16; x++) {
       for (int z = 0; z < 16; z++) {
         for (int y = 0; y < surfaceThickness; y++) {
-          // if (noiseBuffer[pointer] > (60d - (10 * (surfaceThickness
-          // - y)))) {
           if (noiseBuffer[pointer] > (70d - (8 * (surfaceThickness - y)))) {
             setBlock(chunkprimer, x, y + surfaceHeight, z);
           }
