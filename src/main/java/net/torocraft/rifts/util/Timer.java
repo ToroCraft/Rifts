@@ -6,53 +6,53 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class Timer {
-	
-	public static final Timer INSTANCE = new Timer();
 
-	private ConcurrentHashMap<Runnable, Integer> queue = new ConcurrentHashMap<>();
+  public static final Timer INSTANCE = new Timer();
 
-	@SubscribeEvent
-	public void handleWorldTick(WorldTickEvent event) {
-		if (queue.size() < 1) {
-			return;
-		}
-		System.out.println("check timer queue");
-		runNextQueueItem();
-	}
+  private ConcurrentHashMap<Runnable, Integer> queue = new ConcurrentHashMap<>();
 
-	public void addScheduledTask(Runnable task) {
-		addScheduledTask(task, 0);
-	}
+  @SubscribeEvent
+  public void handleWorldTick(WorldTickEvent event) {
+    if (queue.size() < 1) {
+      return;
+    }
+    System.out.println("check timer queue");
+    runNextQueueItem();
+  }
 
-	public void addScheduledTask(Runnable task, int delay) {
-		queue.put(task, delay);
-	}
+  public void addScheduledTask(Runnable task) {
+    addScheduledTask(task, 0);
+  }
 
-	private void runNextQueueItem() {
-		Runnable nextRunnable = popRunQueue();
-		if (nextRunnable != null) {
-			nextRunnable.run();
-		}
-	}
+  public void addScheduledTask(Runnable task, int delay) {
+    queue.put(task, delay);
+  }
 
-	private Runnable popRunQueue() {
-		Entry<Runnable, Integer> next = null;
-		for (Entry<Runnable, Integer> n : queue.entrySet()) {
-			next = n;
-			break;
-		}
+  private void runNextQueueItem() {
+    Runnable nextRunnable = popRunQueue();
+    if (nextRunnable != null) {
+      nextRunnable.run();
+    }
+  }
 
-		if (next == null) {
-			return null;
-		}
+  private Runnable popRunQueue() {
+    Entry<Runnable, Integer> next = null;
+    for (Entry<Runnable, Integer> n : queue.entrySet()) {
+      next = n;
+      break;
+    }
 
-		if (next.getValue() < 1) {
-			queue.remove(next.getKey());
-			return next.getKey();
-		} else {
-			next.setValue(next.getValue() - 1);
-			return null;
-		}
-	}
+    if (next == null) {
+      return null;
+    }
+
+    if (next.getValue() < 1) {
+      queue.remove(next.getKey());
+      return next.getKey();
+    } else {
+      next.setValue(next.getValue() - 1);
+      return null;
+    }
+  }
 
 }
