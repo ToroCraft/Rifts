@@ -9,7 +9,7 @@ public interface RiftLayout {
   /**
    * the length and width of the rifts measured in chunks
    */
-  int RIFT_SIZE = 1;
+  int RIFT_SIZE = 2;
 
   /**
    * the distance from the start of one rift to the next one measured in blocks (including margin
@@ -28,7 +28,7 @@ public interface RiftLayout {
   static int getRiftIdFromOrigin(int chunkX, int chunkZ) {
     int canonicalX = MathHelper.floor(chunkX / RIFT_SIZE);
     int canonicalZ = MathHelper.floor(chunkZ / RIFT_SIZE);
-    if (canonicalX % 2 == 1 || canonicalZ % 2 == 1) {
+    if (canonicalX % 2 != 0 || canonicalZ % 2 != 0) {
       return -1;
     }
     return INSTANCE.pointToIndex(canonicalX / 2, canonicalZ / 2);

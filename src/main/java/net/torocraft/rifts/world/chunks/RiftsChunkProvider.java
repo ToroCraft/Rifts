@@ -8,6 +8,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkGeneratorHell;
+import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.torocraft.rifts.world.layout.RiftLayout;
 
@@ -17,16 +19,36 @@ public class RiftsChunkProvider implements IChunkGenerator {
 
   private final EmptyChunkProvider empty;
   private final TeletoryChunkProvider teletory;
+  private final FlatChunkProvider flat;
+  private final BiomeChunkProvider biome;
+  private final ChunkGeneratorHell hell;
 
   public RiftsChunkProvider(World world) {
     this.world = world;
     empty = new EmptyChunkProvider(world);
     teletory = new TeletoryChunkProvider(world, world.getSeed());
+    flat = new FlatChunkProvider(world);
+    biome = new BiomeChunkProvider(world);
+    hell = new ChunkGeneratorHell(world, false, world.getSeed());
   }
 
   private IChunkGenerator getGenerator(int chunkX, int chunkZ) {
     int riftId = RiftLayout.getRiftIdFromOrigin(chunkX, chunkZ);
-    return riftId % 2 == 0 ? empty : teletory;
+
+    if (riftId < 0) {
+      return empty;
+    }
+//    if (riftId % 3 == 0) {
+//      return flat;
+//    }
+//    if (riftId % 2 == 0) {
+//      return teletory;
+//    }
+//    if (riftId % 1 == 0) {
+//      return hell;
+//    }
+
+    return biome;
   }
 
   @Override
