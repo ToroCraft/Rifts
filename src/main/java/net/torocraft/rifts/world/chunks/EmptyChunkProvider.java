@@ -13,22 +13,18 @@ import net.minecraft.world.gen.IChunkGenerator;
 
 public class EmptyChunkProvider implements IChunkGenerator {
 
-  private final World worldObj;
+  private final World world;
 
-  public EmptyChunkProvider(World worldIn) {
-    this.worldObj = worldIn;
-  }
-
-  public Chunk provideChunk(int x, int z) {
-    ChunkPrimer chunkprimer = new ChunkPrimer();
-    Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
-    chunk.generateSkylightMap();
-    return chunk;
+  public EmptyChunkProvider(World world) {
+    this.world = world;
   }
 
   @Override
   public Chunk generateChunk(int x, int z) {
-    return null;
+    ChunkPrimer chunkprimer = new ChunkPrimer();
+    Chunk chunk = new Chunk(world, chunkprimer, x, z);
+    chunk.generateSkylightMap();
+    return chunk;
   }
 
   public void populate(int x, int z) {
@@ -41,7 +37,7 @@ public class EmptyChunkProvider implements IChunkGenerator {
 
   public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType,
       BlockPos pos) {
-    return Collections.<Biome.SpawnListEntry>emptyList();
+    return Collections.emptyList();
   }
 
   @Nullable

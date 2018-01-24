@@ -10,6 +10,7 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.world.chunks.RiftsChunkProvider;
 
 public class RiftsWorldProvider extends WorldProvider {
 
@@ -30,7 +31,7 @@ public class RiftsWorldProvider extends WorldProvider {
 
   @Override
   public IChunkGenerator createChunkGenerator() {
-    return new RiftsChunkProvider(world, world.getSeed());
+    return new RiftsChunkProvider(world);
   }
 
   @Override

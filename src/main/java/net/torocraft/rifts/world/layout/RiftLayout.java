@@ -1,6 +1,5 @@
 package net.torocraft.rifts.world.layout;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 public interface RiftLayout {
@@ -26,20 +25,20 @@ public interface RiftLayout {
   /**
    * returns -1 if in a margin
    */
-  static int getRiftIdFromOrigin(BlockPos origin) {
-    int canonicalX = MathHelper.floor(origin.getX() / (RIFT_DISTANCE / 2));
-    int canonicalZ = MathHelper.floor(origin.getZ() / (RIFT_DISTANCE / 2));
+  static int getRiftIdFromOrigin(int chunkX, int chunkZ) {
+    int canonicalX = MathHelper.floor(chunkX / RIFT_SIZE);
+    int canonicalZ = MathHelper.floor(chunkZ / RIFT_SIZE);
     if (canonicalX % 2 == 1 || canonicalZ % 2 == 1) {
       return -1;
     }
     return INSTANCE.pointToIndex(canonicalX / 2, canonicalZ / 2);
   }
 
-  static BlockPos getRiftOrigin(int riftId) {
+  static int[] getRiftOrigin(int riftId) {
     int[] canonical = INSTANCE.indexToPoint(riftId);
-    int x = RIFT_DISTANCE * canonical[0];
-    int z = RIFT_DISTANCE * canonical[1];
-    return new BlockPos(x, 0, z);
+    int chunkX = 2 * RIFT_SIZE * canonical[0];
+    int chunkZ = 2 * RIFT_SIZE * canonical[1];
+    return new int[]{chunkX, chunkZ};
   }
 
 
