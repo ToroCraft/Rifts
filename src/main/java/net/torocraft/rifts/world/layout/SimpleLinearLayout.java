@@ -13,6 +13,9 @@ public class SimpleLinearLayout implements RiftLayout {
 
   @Override
   public int pointToIndex(int x, int z) {
-    return z == 0 ? x : -1;
+    if (x < 0 || z != 0) {
+      return -1;
+    }
+    return x;
   }
 }

@@ -9,7 +9,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGeneratorHell;
-import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.torocraft.rifts.world.layout.RiftLayout;
 
@@ -22,6 +21,8 @@ public class RiftsChunkProvider implements IChunkGenerator {
   private final FlatChunkProvider flat;
   private final BiomeChunkProvider biome;
   private final ChunkGeneratorHell hell;
+  private final MarginChunkProvider margin;
+  private final ChunkGeneratorOverworld overworld;
 
   public RiftsChunkProvider(World world) {
     this.world = world;
@@ -30,6 +31,8 @@ public class RiftsChunkProvider implements IChunkGenerator {
     flat = new FlatChunkProvider(world);
     biome = new BiomeChunkProvider(world);
     hell = new ChunkGeneratorHell(world, false, world.getSeed());
+    margin = new MarginChunkProvider(world);
+    overworld = new ChunkGeneratorOverworld(world);
   }
 
   private IChunkGenerator getGenerator(int chunkX, int chunkZ) {
@@ -48,7 +51,7 @@ public class RiftsChunkProvider implements IChunkGenerator {
 //      return hell;
 //    }
 
-    return biome;
+    return overworld;
   }
 
   @Override

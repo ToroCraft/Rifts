@@ -9,6 +9,9 @@ public class RiftLayoutTest {
   public void getRiftIdFromOrigin() throws Exception {
     Assert.assertEquals(0, RiftLayout.getRiftIdFromOrigin(0, 0));
     Assert.assertEquals(-1, RiftLayout.getRiftIdFromOrigin(-1, 0));
+
+    Assert.assertEquals(-1, RiftLayout.getRiftIdFromOrigin(-2, 0));
+
     Assert.assertEquals(0, RiftLayout.getRiftIdFromOrigin(
         RiftLayout.RIFT_SIZE - 1,
         RiftLayout.RIFT_SIZE - 1

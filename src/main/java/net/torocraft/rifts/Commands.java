@@ -10,6 +10,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -67,11 +68,11 @@ public class Commands extends CommandBase {
 
     System.out.println("enter rift [" + args[1] + "]");
 
-    EntityPlayer player = getCommandSenderAsPlayer(sender);
+    EntityPlayerMP player = getCommandSenderAsPlayer(sender);
     World world = player.world;
     int riftId = i(args[1]);
 
-    DimensionUtil.changeEntityDimension(player, Rifts.RIFT_DIM_ID);
+    DimensionUtil.travelToRift(player, 2);  //changeEntityDimension(player, Rifts.RIFT_DIM_ID);
   }
 
   private int senderDimId(ICommandSender sender) {

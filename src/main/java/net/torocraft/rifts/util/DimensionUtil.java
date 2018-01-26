@@ -1,35 +1,25 @@
 package net.torocraft.rifts.util;
 
 import java.lang.reflect.Field;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeHooks;
+import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.teleporter.RiftTeleporter;
 
 public class DimensionUtil {
 
-  public static void changeEntityDimension(final Entity entity, int dimId) {
-    if (entity instanceof EntityPlayerMP) {
-      EntityPlayerMP player = (EntityPlayerMP) entity;
-      Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, dimId));
-    } else {
-      // TODO: support teleporting non-players
-    }
+  public static void travelToRift(EntityPlayerMP player, int riftId) {
+    WorldServer world = player.mcServer.getWorld(Rifts.RIFT_DIM_ID);
+    Teleporter t = new RiftTeleporter(world, riftId);
+    Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, Rifts.RIFT_DIM_ID, t));
   }
 
-  private static void changePlayerDimension(EntityPlayerMP player, int dimId) {
-    if (!net.minecraftforge.common.ForgeHooks.onTravelToDimension(player, dimId)) {
+  private static void changePlayerDimension(EntityPlayerMP player, int dimId, Teleporter teleporter) {
+    if (!ForgeHooks.onTravelToDimension(player, dimId)) {
       return;
     }
-
-    if (player == null) {
-      return;
-    }
-
-    WorldServer world = player.mcServer.getWorld(dimId);
-    Teleporter teleporter = new RiftTeleporter(world);
-
     setInvulnerableDimensionChange(player, true);
     player.timeUntilPortal = 10;
     player.mcServer.getPlayerList().transferPlayerToDimension(player, dimId, teleporter);
@@ -42,7 +32,6 @@ public class DimensionUtil {
       Field lastExperience = getReflectionField("field_71144_ck", "lastExperience");
       Field lastHealth = getReflectionField("field_71149_ch", "lastHealth");
       Field lastFoodLevel = getReflectionField("field_71146_ci", "lastFoodLevel");
-
       lastExperience.setInt(player, -1);
       lastHealth.setFloat(player, -1.0F);
       lastFoodLevel.setInt(player, -1);
