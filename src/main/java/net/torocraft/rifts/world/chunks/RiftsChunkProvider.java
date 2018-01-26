@@ -10,7 +10,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGeneratorHell;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.torocraft.rifts.world.layout.RiftLayout;
+import net.torocraft.rifts.world.RiftUtil;
 
 public class RiftsChunkProvider implements IChunkGenerator {
 
@@ -36,7 +36,7 @@ public class RiftsChunkProvider implements IChunkGenerator {
   }
 
   private IChunkGenerator getGenerator(int chunkX, int chunkZ) {
-    int riftId = RiftLayout.getRiftIdFromOrigin(chunkX, chunkZ);
+    int riftId = RiftUtil.getRiftIdForChunk(chunkX, chunkZ);
 
     if (riftId < 0) {
       return empty;

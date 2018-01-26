@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
-import net.torocraft.rifts.world.layout.RiftLayout;
+import net.torocraft.rifts.world.RiftUtil;
 
 public class RiftTeleporter extends Teleporter {
 
@@ -25,7 +25,7 @@ public class RiftTeleporter extends Teleporter {
 
   @Override
   public boolean placeInExistingPortal(Entity entity, float rotationYaw) {
-    BlockPos pos = RiftLayout.getRiftCenter(riftId);
+    BlockPos pos = RiftUtil.getRiftCenter(riftId);
     // TODO vertical scan
     int y = 100;
     positionEntity(entity, rotationYaw, new BlockPos(pos.getX(), y, pos.getZ()));

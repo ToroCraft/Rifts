@@ -44,7 +44,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   double[] maxLimitRegion;
   double[] depthRegion;
 
-  private final Biome biome = Biomes.MUSHROOM_ISLAND;
+  private final Biome biome = Biomes.PLAINS;
 
   public ChunkGeneratorOverworld(World worldIn) {
     long seed = worldIn.getSeed();

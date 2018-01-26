@@ -66,13 +66,11 @@ public class Commands extends CommandBase {
       throw new WrongUsageException("commands.rifts.rift_id_required");
     }
 
-    System.out.println("enter rift [" + args[1] + "]");
-
     EntityPlayerMP player = getCommandSenderAsPlayer(sender);
     World world = player.world;
     int riftId = i(args[1]);
 
-    DimensionUtil.travelToRift(player, 2);  //changeEntityDimension(player, Rifts.RIFT_DIM_ID);
+    DimensionUtil.travelToRift(player, riftId);
   }
 
   private int senderDimId(ICommandSender sender) {
