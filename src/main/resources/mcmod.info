@@ -2,7 +2,7 @@
 {
   "modid": "torocraft-rifts",
   "name": "Rifts",
-  "description": "Test your skills and gear in Diablo III style rifts",
+  "description": "Test your skills and gear in Diablo III inspired rifts",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
