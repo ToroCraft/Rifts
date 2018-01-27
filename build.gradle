@@ -26,7 +26,6 @@ minecraft {
 
 dependencies {
     compile 'junit:junit:4.12'
-    compile files("./libs/torotraits-1.12.2-1.jar")
 }
 
 processResources {

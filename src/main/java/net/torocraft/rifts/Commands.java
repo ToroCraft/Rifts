@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.torocraft.rifts.util.DimensionUtil;
+import net.torocraft.rifts.dim.DimensionUtil;
 
 public class Commands extends CommandBase {
 

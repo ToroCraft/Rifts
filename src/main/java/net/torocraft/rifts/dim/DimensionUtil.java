@@ -1,4 +1,4 @@
-package net.torocraft.rifts.util;
+package net.torocraft.rifts.dim;
 
 import java.lang.reflect.Field;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -6,7 +6,8 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.torocraft.rifts.Rifts;
-import net.torocraft.rifts.teleporter.RiftTeleporter;
+import net.torocraft.rifts.dim.RiftTeleporter;
+import net.torocraft.rifts.util.Timer;
 
 public class DimensionUtil {
 
@@ -63,7 +64,7 @@ public class DimensionUtil {
         join(names, ", ") + " field not found in " + EntityPlayerMP.class.getName());
   }
 
-  public static Field getFieldFromPlayer(String name) {
+  private static Field getFieldFromPlayer(String name) {
     try {
       return EntityPlayerMP.class.getDeclaredField(name);
     } catch (Exception e) {
@@ -71,7 +72,7 @@ public class DimensionUtil {
     }
   }
 
-  public static String join(String[] aArr, String sSep) {
+  private static String join(String[] aArr, String sSep) {
     StringBuilder sbStr = new StringBuilder();
     for (int i = 0, il = aArr.length; i < il; i++) {
       if (i > 0) {

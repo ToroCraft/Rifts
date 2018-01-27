@@ -11,10 +11,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.torocraft.rifts.save.data.RiftData;
+import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.util.Timer;
 import net.torocraft.rifts.world.RiftsWorldProvider;
-import net.torocraft.torotraits.ToroTraits;
-import net.torocraft.torotraits.api.SpawnApi;
 
 @Mod(modid = Rifts.MODID, name = Rifts.MODNAME, version = Rifts.VERSION)
 public class Rifts {

@@ -1,11 +1,13 @@
-package net.torocraft.rifts.teleporter;
+package net.torocraft.rifts.dim;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.torocraft.rifts.world.RiftUtil;
+import net.torocraft.torotraits.api.SpawnApi;
 
 public class RiftTeleporter extends Teleporter {
 
@@ -26,9 +28,22 @@ public class RiftTeleporter extends Teleporter {
   @Override
   public boolean placeInExistingPortal(Entity entity, float rotationYaw) {
     BlockPos pos = RiftUtil.getRiftCenter(riftId);
-    // TODO vertical scan
-    int y = 100;
-    positionEntity(entity, rotationYaw, new BlockPos(pos.getX(), y, pos.getZ()));
+
+    int y = 90;
+    BlockPos riftCenter = new BlockPos(pos.getX(), y, pos.getZ());
+
+    entity.motionX = entity.motionY = entity.motionZ = 0.0D;
+
+    if (entity instanceof EntityCreature) {
+      SpawnApi.findAndSetSuitableSpawnLocation((EntityCreature) entity, riftCenter, 10);
+    } else {
+      positionEntity(entity, rotationYaw, riftCenter);
+    }
+
+    if (entity instanceof EntityPlayerMP) {
+      positionPlayer((EntityPlayerMP) entity, rotationYaw);
+    }
+
     return true;
   }
 
@@ -36,12 +51,15 @@ public class RiftTeleporter extends Teleporter {
     double x = (double) (pos).getX() + 0.5D;
     double y = (double) (pos).getY() + 0.5D;
     double z = (double) (pos).getZ() + 0.5D;
-    entity.motionX = entity.motionY = entity.motionZ = 0.0D;
-    if (entity instanceof EntityPlayerMP) {
-      ((EntityPlayerMP) entity).connection
-          .setPlayerLocation(x, y, z, entity.rotationYaw, entity.rotationPitch);
-    }
     entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
+    entity.setPositionAndUpdate(x, y, z);
+  }
+
+  private void positionPlayer(EntityPlayerMP entity, float rotationYaw) {
+    double x = entity.posX;
+    double y = entity.posY;
+    double z = entity.posZ;
+    entity.setLocationAndAngles(x, y, z, rotationYaw, entity.rotationPitch);
     entity.setPositionAndUpdate(x, y, z);
   }
 
