@@ -21,6 +21,7 @@ import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
+import net.torocraft.rifts.world.RiftUtil;
 
 public class ChunkGeneratorOverworld implements IChunkGenerator {
 
@@ -205,7 +206,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   }
 
   public void setBlocksInChunk(int xIn, int zIn, ChunkPrimer primer) {
-
+    int riftId = RiftUtil.getRiftIdForChunk(xIn, zIn);
     generateHeightmap(xIn * 4, zIn * 4);
 
     for (int i = 0; i < 4; ++i) {
@@ -251,7 +252,9 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
                 int z = l * 4 + l2;
 
                 if ((currentLevel += nextStep) > 0.0D) {
-                  primer.setBlockState(x, y, z, STONE);
+                  if (isInRift(xIn, zIn, riftId, x, z)) {
+                    primer.setBlockState(x, y, z, STONE);
+                  }
                 }
               }
 
@@ -267,6 +270,21 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
         }
       }
     }
+  }
+
+  private static final int RIFT_END = (RiftUtil.RIFT_SIZE * 16) / 2;
+  private static final int RIFT_BEGINNING_OF_END = RIFT_END - 30;
+
+  private boolean isInRift(int xIn, int zIn, int riftId, int x, int z) {
+    double distance = RiftUtil.distanceFromOrigin(riftId, x + (xIn * 16), z + (zIn * 16));
+    if (distance < RIFT_BEGINNING_OF_END) {
+      return true;
+    }
+    if (distance > RIFT_END) {
+      return false;
+    }
+    double chance = (RIFT_END - distance) / (RIFT_END - RIFT_BEGINNING_OF_END);
+    return chance > rand.nextDouble();
   }
 
   public void replaceBiomeBlocks(int x, int z, ChunkPrimer primer) {

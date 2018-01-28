@@ -21,6 +21,10 @@ public class RiftUtil {
    */
   public static final int RIFT_DISTANCE = RIFT_SIZE * 16 * 2;
 
+  public static double distanceFromOrigin(int riftId, int x, int z) {
+    return getRiftCenter(riftId).getDistance(x, 0, z);
+  }
+
   /**
    * returns -1 if in a margin
    */
@@ -58,6 +62,6 @@ public class RiftUtil {
     int[] chunk = getRiftOrigin(riftId);
     int x = (chunk[0] * 16) + RIFT_RADIUS;
     int z = (chunk[1] * 16) + RIFT_RADIUS;
-    return new BlockPos(x, 256, z);
+    return new BlockPos(x, 0, z);
   }
 }
