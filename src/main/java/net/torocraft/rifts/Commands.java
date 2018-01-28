@@ -15,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.torocraft.rifts.dim.DimensionUtil;
+import net.torocraft.rifts.world.RiftUtil;
 
 public class Commands extends CommandBase {
 
@@ -51,6 +52,9 @@ public class Commands extends CommandBase {
       case "enter":
         enter(server, sender, args);
         return;
+      case "leave":
+        leave(server, sender, args);
+        return;
       default:
         throw new WrongUsageException("commands.rifts.command_not_found");
     }
@@ -67,10 +71,18 @@ public class Commands extends CommandBase {
     }
 
     EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-    World world = player.world;
     int riftId = i(args[1]);
-
     DimensionUtil.travelToRift(player, riftId);
+  }
+
+  private void leave(MinecraftServer server, ICommandSender sender, String[] args)
+      throws CommandException {
+    if (!(sender instanceof EntityPlayer)) {
+      return;
+    }
+    EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+    int riftId = RiftUtil.getRiftIdForChunk(player.chunkCoordX, player.chunkCoordZ);
+    DimensionUtil.travelToOverworld(player, riftId);
   }
 
   private int senderDimId(ICommandSender sender) {
@@ -94,7 +106,7 @@ public class Commands extends CommandBase {
   public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender,
       String[] args, @Nullable BlockPos targetPos) {
     if (args.length == 1) {
-      return getListOfStringsMatchingLastWord(args, "enter");
+      return getListOfStringsMatchingLastWord(args, "enter", "leave");
     }
     String command = args[0];
     switch (command) {

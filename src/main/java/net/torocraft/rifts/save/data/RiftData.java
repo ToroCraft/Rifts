@@ -8,9 +8,15 @@ public class RiftData {
   public RiftType type;
 
   /**
-   * out of 100
+   * rift progress out of 100
    */
   @NbtField
   public int progress;
+
+  /**
+   * the location of the rift portal in the overworld, a BlockPos packed into a long
+   */
+  @NbtField
+  public long portalLocation;
 
 }

@@ -1,13 +1,13 @@
 package net.torocraft.rifts.dim;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.torocraft.rifts.world.RiftUtil;
 import net.torocraft.torotraits.api.SpawnApi;
+import net.torocraft.torotraits.api.SpawnLocationScanner;
 
 public class RiftTeleporter extends Teleporter {
 
@@ -34,32 +34,29 @@ public class RiftTeleporter extends Teleporter {
 
     entity.motionX = entity.motionY = entity.motionZ = 0.0D;
 
-    if (entity instanceof EntityCreature) {
-      SpawnApi.findAndSetSuitableSpawnLocation((EntityCreature) entity, riftCenter, 10);
-    } else {
-      positionEntity(entity, rotationYaw, riftCenter);
+    BlockPos spawnLocation;
+
+    SpawnLocationScanner scanner = new SpawnLocationScanner(world, entity, riftCenter);
+    spawnLocation = scanner.areaScan(20, world.getActualHeight(), 20);
+
+    if (spawnLocation == null) {
+      spawnLocation = pos;
     }
 
-    if (entity instanceof EntityPlayerMP) {
-      positionPlayer((EntityPlayerMP) entity, rotationYaw);
-    }
-
+    positionEntity(entity, rotationYaw, spawnLocation);
     return true;
   }
 
   private void positionEntity(Entity entity, float rotationYaw, BlockPos pos) {
-    double x = (double) (pos).getX() + 0.5D;
-    double y = (double) (pos).getY() + 0.5D;
-    double z = (double) (pos).getZ() + 0.5D;
+    double x = (double) pos.getX() + 0.5D;
+    double y = (double) pos.getY() + 0.5D;
+    double z = (double) pos.getZ() + 0.5D;
+    entity.motionX = entity.motionY = entity.motionZ = 0.0D;
+    if (entity instanceof EntityPlayerMP) {
+      ((EntityPlayerMP) entity).connection
+          .setPlayerLocation(x, y, z, entity.rotationYaw, entity.rotationPitch);
+    }
     entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
-    entity.setPositionAndUpdate(x, y, z);
-  }
-
-  private void positionPlayer(EntityPlayerMP entity, float rotationYaw) {
-    double x = entity.posX;
-    double y = entity.posY;
-    double z = entity.posZ;
-    entity.setLocationAndAngles(x, y, z, rotationYaw, entity.rotationPitch);
     entity.setPositionAndUpdate(x, y, z);
   }
 
