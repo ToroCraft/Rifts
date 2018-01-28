@@ -13,7 +13,7 @@ public class RiftsWorldSaveData extends WorldSavedData {
 
   private static final String NBT_RIFTS = "torocraft_rifts";
 
-  private WorldData saveData;
+  private WorldData saveData = new WorldData();
 
   public RiftsWorldSaveData() {
     super(NAME);
@@ -23,26 +23,13 @@ public class RiftsWorldSaveData extends WorldSavedData {
     super(s);
   }
 
-  public synchronized int createRift(RiftData data) {
-    saveData.rifts.add(data);
-    return saveData.rifts.size() - 1;
+  public void saveRift(int riftId, RiftData data) {
+    saveData.rifts.put(riftId + "", data);
+    markDirty();
   }
 
-  public boolean updateRift(int riftId, RiftData data) {
-    try {
-      saveData.rifts.set(riftId, data);
-      return true;
-    } catch (IndexOutOfBoundsException e) {
-      return false;
-    }
-  }
-
-  public RiftData getRift(int riftId) {
-    try {
-      return saveData.rifts.get(riftId);
-    } catch (IndexOutOfBoundsException e) {
-      return null;
-    }
+  public RiftData loadRift(int riftId) {
+    return saveData.rifts.get(riftId + "");
   }
 
   @Override

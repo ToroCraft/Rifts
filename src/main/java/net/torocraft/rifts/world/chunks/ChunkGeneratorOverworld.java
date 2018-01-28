@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -21,6 +20,7 @@ import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
+import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.world.RiftUtil;
 
 public class ChunkGeneratorOverworld implements IChunkGenerator {
@@ -45,7 +45,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   double[] maxLimitRegion;
   double[] depthRegion;
 
-  private final Biome biome = Biomes.PLAINS;
+  //private final Biome biome = Biomes.PLAINS;
 
   public ChunkGeneratorOverworld(World worldIn) {
     long seed = worldIn.getSeed();
@@ -83,6 +83,9 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
 
 
   private void generateHeightmap(int xIn, int zIn) {
+    int riftId = RiftUtil.getRiftIdForChunk(xIn, zIn);
+    Biome biome = RiftWorldSaveDataAccessor.loadRift(world, riftId).type.getBiome();
+
     int yIn = 0;
     depthRegion = depthNoise.generateNoiseOctaves(
         depthRegion,
@@ -288,6 +291,9 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   }
 
   public void replaceBiomeBlocks(int x, int z, ChunkPrimer primer) {
+    int riftId = RiftUtil.getRiftIdForChunk(x, z);
+    Biome biome = RiftWorldSaveDataAccessor.loadRift(world, riftId).type.getBiome();
+
     double d0 = 0.03125D;
     this.depthBuffer = this.surfaceNoise
         .getRegion(this.depthBuffer, (double) (x * 16), (double) (z * 16), 16, 16, 0.0625D, 0.0625D,
@@ -315,6 +321,9 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
 
   @Override
   public void populate(int x, int z) {
+    int riftId = RiftUtil.getRiftIdForChunk(x, z);
+    Biome biome = RiftWorldSaveDataAccessor.loadRift(world, riftId).type.getBiome();
+
     BlockFalling.fallInstantly = true;
     int i = x * 16;
     int j = z * 16;
