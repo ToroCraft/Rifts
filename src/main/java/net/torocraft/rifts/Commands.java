@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.torocraft.rifts.blocks.BlockRiftPortal;
 import net.torocraft.rifts.dim.DimensionUtil;
 import net.torocraft.rifts.world.RiftUtil;
 
@@ -55,6 +55,9 @@ public class Commands extends CommandBase {
       case "leave":
         leave(server, sender, args);
         return;
+      case "create_portal":
+        createPortal(server, sender, args);
+        return;
       default:
         throw new WrongUsageException("commands.rifts.command_not_found");
     }
@@ -85,6 +88,19 @@ public class Commands extends CommandBase {
     DimensionUtil.travelToOverworld(player, riftId);
   }
 
+  private void createPortal(MinecraftServer server, ICommandSender sender, String[] args)
+      throws CommandException {
+    if (!(sender instanceof EntityPlayer)) {
+      return;
+    }
+    EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+
+    BlockPos pos = player.getPosition().north().north().up();
+
+    server.getWorld(player.dimension).setBlockState(pos, BlockRiftPortal.INSTANCE.getDefaultState());
+
+  }
+
   private int senderDimId(ICommandSender sender) {
     try {
       return getCommandSenderAsPlayer(sender).dimension;
@@ -106,7 +122,7 @@ public class Commands extends CommandBase {
   public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender,
       String[] args, @Nullable BlockPos targetPos) {
     if (args.length == 1) {
-      return getListOfStringsMatchingLastWord(args, "enter", "leave");
+      return getListOfStringsMatchingLastWord(args, "enter", "leave", "create_portal");
     }
     String command = args[0];
     switch (command) {

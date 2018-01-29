@@ -19,4 +19,9 @@ public class RiftData {
   @NbtField
   public long portalLocation;
 
+  /**
+   * when false, this data can be removed from world save
+   */
+  public boolean active = true;
+
 }

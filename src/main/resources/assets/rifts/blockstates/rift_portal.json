@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "axis=z": {
+      "model": "rifts:teletory_portal_ew"
+    },
+    "axis=x": {
+      "model": "rifts:teletory_portal_ns"
+    },
+    "inventory": {
+      "model": "rifts:teletory_portal_ns"
+    }
+  }
+}
