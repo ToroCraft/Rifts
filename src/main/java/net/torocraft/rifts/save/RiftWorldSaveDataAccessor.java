@@ -1,6 +1,5 @@
 package net.torocraft.rifts.save;
 
-import java.util.Random;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
@@ -9,18 +8,10 @@ import net.torocraft.rifts.save.data.RiftType;
 
 public class RiftWorldSaveDataAccessor {
 
-  public static RiftData createRandom(int riftId) {
-    RiftData data = new RiftData();
-    data.type = RiftType.values()[new Random().nextInt(RiftType.values().length)];
-    data.portalLocation = 0;
-    data.progress = 0;
-    return data;
-  }
-
   public static RiftData loadRift(World world, int riftId) {
     RiftData data = get(world).loadRift(riftId);
     if (data == null) {
-      data = createRandom(riftId);
+      data = RiftData.random();
       saveRift(world, riftId, data);
     }
     return data;

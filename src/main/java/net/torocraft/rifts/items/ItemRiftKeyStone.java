@@ -58,11 +58,9 @@ public class ItemRiftKeyStone extends Item {
   public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
       EnumFacing facing, float hitX, float hitY, float hitZ) {
     if (world.isRemote) {
-      System.out.println("client click");
       return EnumActionResult.PASS;
     }
-    System.out.println("server click");
-    if (PortalUtil.openRiftPortal(player, pos)) {
+    if (PortalUtil.openRiftPortal(player, pos, facing)) {
       return EnumActionResult.SUCCESS;
     }
     return EnumActionResult.FAIL;

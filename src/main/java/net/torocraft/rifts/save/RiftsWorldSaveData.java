@@ -34,7 +34,7 @@ public class RiftsWorldSaveData extends WorldSavedData {
   public int createRift(BlockPos pos) {
     int riftId = saveData.nextRift++;
     System.out.println("creating Rift " + riftId);
-    RiftData data = RiftWorldSaveDataAccessor.createRandom(riftId);
+    RiftData data = RiftData.random();
     data.portalLocation = pos.toLong();
     saveRift(riftId, data);
     return riftId;

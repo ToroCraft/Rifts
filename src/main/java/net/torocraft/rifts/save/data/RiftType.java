@@ -1,5 +1,6 @@
 package net.torocraft.rifts.save.data;
 
+import java.util.Random;
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 
@@ -73,5 +74,9 @@ public enum RiftType {
 
   public Biome getBiome() {
     return biome;
+  }
+
+  public static RiftType random() {
+    return values()[new Random().nextInt(values().length)];
   }
 }

@@ -21,16 +21,14 @@ public class PortalUtil {
 
   public static void enterRiftPortal(EntityPlayer player, BlockPos pos) {
     if (!(player instanceof EntityPlayerMP)) {
-      System.out.println("wrong user type, really?");
       return;
     }
     int riftId = RiftWorldSaveDataAccessor.findByPos(player.world, pos);
-    System.out.println("enterRiftPortal: found rift id " + riftId + ", teleporting");
     DimensionUtil.travelToRift((EntityPlayerMP)player, riftId);
   }
 
-  public static boolean openRiftPortal(EntityPlayer player, BlockPos pos) {
-    if (placeRiftPortalBlocks(player, pos)) {
+  public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
+    if (placeRiftPortalBlocks(player, pos, blockSide)) {
       RiftWorldSaveDataAccessor.createRift(player.world, pos);
       playSound(player, SoundEvents.ENTITY_LIGHTNING_IMPACT);
       return true;
@@ -40,8 +38,12 @@ public class PortalUtil {
     }
   }
 
-  private static boolean placeRiftPortalBlocks(EntityPlayer player, BlockPos pos) {
+  private static boolean placeRiftPortalBlocks(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
     World world = player.world;
+
+    if (!blockSide.equals(EnumFacing.UP)) {
+      return false;
+    }
 
     if (!isAir(world, pos)) {
       pos = pos.up();

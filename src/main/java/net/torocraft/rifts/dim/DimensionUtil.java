@@ -2,13 +2,10 @@ package net.torocraft.rifts.dim;
 
 import java.lang.reflect.Field;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeHooks;
 import net.torocraft.rifts.Rifts;
-import net.torocraft.rifts.dim.RiftTeleporter;
 import net.torocraft.rifts.util.Timer;
 
 public class DimensionUtil {
@@ -16,13 +13,12 @@ public class DimensionUtil {
   public static final int OVERWORLD_DIM_ID = 0;
 
   public static void travelToRift(EntityPlayerMP player, int riftId) {
-    Teleporter t = new RiftTeleporter(getWorld(player, Rifts.RIFT_DIM_ID), riftId);
+    Teleporter t = new EnterRiftTeleporter(getWorld(player, Rifts.RIFT_DIM_ID), riftId);
     Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, Rifts.RIFT_DIM_ID, t));
   }
 
   public static void travelToOverworld(EntityPlayerMP player, int riftId) {
-    // TODO get rift portal location
-    Teleporter t = new RiftTeleporter(getWorld(player, OVERWORLD_DIM_ID), riftId);
+    Teleporter t = new LeaveRiftTeleporter(getWorld(player, OVERWORLD_DIM_ID), riftId);
     Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, OVERWORLD_DIM_ID, t));
   }
 

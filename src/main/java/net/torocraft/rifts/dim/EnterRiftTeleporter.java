@@ -9,12 +9,12 @@ import net.torocraft.rifts.world.RiftUtil;
 import net.torocraft.torotraits.api.SpawnApi;
 import net.torocraft.torotraits.api.SpawnLocationScanner;
 
-public class RiftTeleporter extends Teleporter {
+public class EnterRiftTeleporter extends Teleporter {
 
   private final WorldServer world;
   private final int riftId;
 
-  public RiftTeleporter(WorldServer worldIn, int riftId) {
+  public EnterRiftTeleporter(WorldServer worldIn, int riftId) {
     super(worldIn);
     this.world = worldIn;
     this.riftId = riftId;
@@ -32,12 +32,8 @@ public class RiftTeleporter extends Teleporter {
     int y = 90;
     BlockPos riftCenter = new BlockPos(pos.getX(), y, pos.getZ());
 
-    entity.motionX = entity.motionY = entity.motionZ = 0.0D;
-
-    BlockPos spawnLocation;
-
     SpawnLocationScanner scanner = new SpawnLocationScanner(world, entity, riftCenter);
-    spawnLocation = scanner.areaScan(20, world.getActualHeight(), 20);
+    BlockPos spawnLocation = scanner.areaScan(20, world.getActualHeight(), 20);
 
     if (spawnLocation == null) {
       spawnLocation = pos;
