@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.util.PortalUtil;
 
 @EventBusSubscriber
 @SuppressWarnings("deprecation")
@@ -83,6 +84,7 @@ public class BlockRiftPortal extends BlockBreakable {
   protected void onPlayerEnterPortal(EntityPlayerMP player, BlockPos pos) {
     // TODO good stuff here
     System.out.println("onPlayerEnterPortal " + pos);
+    PortalUtil.enterRiftPortal(player, pos);
   }
 
   @Override

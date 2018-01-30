@@ -6,6 +6,9 @@ import net.torocraft.torotraits.nbt.NbtField;
 
 public class WorldData {
 
+  @NbtField
+  public int nextRift = 0;
+
   @NbtField(genericType = RiftData.class)
   public Map<String, RiftData> rifts = new HashMap<>();
 
