@@ -41,6 +41,10 @@ public class PortalUtil {
   private static boolean placeRiftPortalBlocks(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
     World world = player.world;
 
+    if (player.dimension != 0) {
+      return false;
+    }
+
     if (!blockSide.equals(EnumFacing.UP)) {
       return false;
     }

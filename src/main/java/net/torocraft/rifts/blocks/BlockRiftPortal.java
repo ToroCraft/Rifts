@@ -11,10 +11,15 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -31,6 +36,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.items.ItemRiftKeyStone;
+import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
+import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.util.PortalUtil;
 
 @EventBusSubscriber
@@ -82,9 +90,47 @@ public class BlockRiftPortal extends BlockBreakable {
   }
 
   protected void onPlayerEnterPortal(EntityPlayerMP player, BlockPos pos) {
-    // TODO good stuff here
-    System.out.println("onPlayerEnterPortal " + pos);
     PortalUtil.enterRiftPortal(player, pos);
+  }
+
+  @Override
+  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block,
+      BlockPos fromPos) {
+    if (block == BlockRiftPortal.INSTANCE) {
+      world.setBlockState(pos, Blocks.AIR.getDefaultState());
+    }
+  }
+
+  @Override
+  public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+    super.breakBlock(worldIn, pos, state);
+    dropRiftStone(worldIn, pos);
+  }
+
+  // TODO Move
+  private static final String NBT_RIFT_ID = "torocraft_rift_id";
+
+  private void dropRiftStone(World world, BlockPos pos) {
+    // TODO check if already dropped
+
+    int riftId = RiftWorldSaveDataAccessor.findByPos(world, pos);
+    RiftData data = RiftWorldSaveDataAccessor.loadRift(world, riftId);
+    if (data.keystoneDropped) {
+      return;
+    }
+    data.keystoneDropped = true;
+
+    // TODO reset keystone dropped when portal created
+
+    ItemStack keystone = new ItemStack(ItemRiftKeyStone.INSTANCE, 1);
+    NBTTagCompound keystoneNbt = new NBTTagCompound();
+    keystoneNbt.setTag(NBT_RIFT_ID, new NBTTagInt(riftId));
+    keystone.setTagCompound(keystoneNbt);
+    keystone.setStackDisplayName("Cracked Rift Keystone (" + riftId + ")");
+
+    EntityItem keystoneEntity =
+        new EntityItem(world, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, keystone);
+    world.spawnEntity(keystoneEntity);
   }
 
   @Override

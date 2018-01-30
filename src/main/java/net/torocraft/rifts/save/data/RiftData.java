@@ -20,6 +20,8 @@ public class RiftData {
   @NbtField
   public long portalLocation = BlockPos.ORIGIN.toLong();
 
+  public transient boolean keystoneDropped = false;
+
   /**
    * when false, this data can be removed from world save
    */
