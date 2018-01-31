@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -104,33 +103,40 @@ public class BlockRiftPortal extends BlockBreakable {
   @Override
   public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
     super.breakBlock(worldIn, pos, state);
-    dropRiftStone(worldIn, pos);
+    collapseRift(worldIn, pos);
   }
 
-  // TODO Move
-  private static final String NBT_RIFT_ID = "torocraft_rift_id";
-
-  private void dropRiftStone(World world, BlockPos pos) {
-    // TODO check if already dropped
-
-    int riftId = RiftWorldSaveDataAccessor.findByPos(world, pos);
-    RiftData data = RiftWorldSaveDataAccessor.loadRift(world, riftId);
-    if (data.keystoneDropped) {
-      return;
+  private void collapseRift(World world, BlockPos pos) {
+    RiftData data = RiftWorldSaveDataAccessor.findByPortalPosition(world, pos);
+    if (isPrimaryPortalBlock(pos, data)) {
+      RiftWorldSaveDataAccessor.removeRift(world, data.riftId);
+      dropKeyStone(world, pos, data);
     }
-    data.keystoneDropped = true;
+  }
 
-    // TODO reset keystone dropped when portal created
+  private void dropKeyStone(World world, BlockPos pos, RiftData data) {
+    spawnItem(world, pos, createCrackedKeystone(data.riftId));
+  }
 
+  private boolean isPrimaryPortalBlock(BlockPos pos, RiftData data) {
+    return data != null && data.portalLocation == pos.toLong();
+  }
+
+  private void spawnItem(World world, BlockPos pos, ItemStack stack) {
+    double x = pos.getX() + 0.5;
+    double y = pos.getY();
+    double z = pos.getZ() + 0.5;
+    EntityItem entity = new EntityItem(world, x, y, z, stack);
+    world.spawnEntity(entity);
+  }
+
+  private ItemStack createCrackedKeystone(int riftId) {
     ItemStack keystone = new ItemStack(ItemRiftKeyStone.INSTANCE, 1);
     NBTTagCompound keystoneNbt = new NBTTagCompound();
-    keystoneNbt.setTag(NBT_RIFT_ID, new NBTTagInt(riftId));
+    keystoneNbt.setTag(Rifts.NBT_RIFT_ID, new NBTTagInt(riftId));
     keystone.setTagCompound(keystoneNbt);
     keystone.setStackDisplayName("Cracked Rift Keystone (" + riftId + ")");
-
-    EntityItem keystoneEntity =
-        new EntityItem(world, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, keystone);
-    world.spawnEntity(keystoneEntity);
+    return keystone;
   }
 
   @Override

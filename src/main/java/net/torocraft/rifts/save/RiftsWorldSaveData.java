@@ -1,7 +1,7 @@
 package net.torocraft.rifts.save;
 
 import java.util.Map.Entry;
-import jdk.nashorn.internal.ir.Block;
+import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.WorldSavedData;
@@ -26,42 +26,35 @@ public class RiftsWorldSaveData extends WorldSavedData {
     super(s);
   }
 
-  public void saveRift(int riftId, RiftData data) {
-    saveData.rifts.put(riftId + "", data);
+  public void saveRift(RiftData data) {
+    saveData.rifts.put(data.riftId + "", data);
     markDirty();
   }
 
-  public int createRift(BlockPos pos) {
-    int riftId = saveData.nextRift++;
-    System.out.println("creating Rift " + riftId);
-    RiftData data = RiftData.random();
-    data.portalLocation = pos.toLong();
-    saveRift(riftId, data);
-    return riftId;
+  public void removeRift(int riftId) {
+    saveData.rifts.remove(riftId + "");
+    markDirty();
   }
 
-  public int findByPos(BlockPos pos) {
+  public RiftData createRift(BlockPos pos) {
+    RiftData data = RiftData.random(saveData.nextRift++);
+    data.portalLocation = pos.toLong();
+    saveRift(data);
+    return data;
+  }
+
+  @Nullable
+  public RiftData findByPortalPosition(BlockPos pos) {
     for (Entry<String, RiftData> entry : saveData.rifts.entrySet()) {
-      if (distanceSq(pos, entry.getValue()) < 10) {
-        System.out.println("found rift: " + entry.getKey());
-        return i(entry.getKey());
+      if (distanceSq(pos, entry.getValue()) < 15) {
+        return entry.getValue();
       }
     }
-    System.out.println("rift not found, now what?");
-    return 0;
+    return null;
   }
 
   private double distanceSq(BlockPos pos, RiftData riftData) {
     return pos.distanceSq(BlockPos.fromLong(riftData.portalLocation));
-  }
-
-  private int i(String key) {
-    try {
-      return Integer.parseInt(key);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return 0;
-    }
   }
 
   public RiftData loadRift(int riftId) {
@@ -71,12 +64,14 @@ public class RiftsWorldSaveData extends WorldSavedData {
   @Override
   public void readFromNBT(NBTTagCompound c) {
     saveData = new WorldData();
+    System.out.println("READ: " + c);
     NbtSerializer.read(c, saveData);
   }
 
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound c) {
     NbtSerializer.write(c, saveData);
+    System.out.println("WRITE: " + c);
     return c;
   }
 

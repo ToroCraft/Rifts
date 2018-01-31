@@ -21,6 +21,7 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
+import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.world.RiftUtil;
 
 public class ChunkGeneratorOverworld implements IChunkGenerator {
@@ -81,10 +82,19 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
     worldIn.setSeaLevel(this.settings.seaLevel);
   }
 
+  private Biome getBiome(int xIn, int zIn) {
+    int riftId = RiftUtil.getRiftIdForChunk(xIn, zIn);
+    RiftData data = RiftWorldSaveDataAccessor.loadRift(world, riftId);
+    if (data == null) {
+      System.out.println("****************** RIFT [" + riftId + "] NOT FOUND, CREATING A RANDOM ONE");
+      data = data.random(riftId);
+      RiftWorldSaveDataAccessor.saveRift(world, data);
+    }
+    return data.type.getBiome();
+  }
 
   private void generateHeightmap(int xIn, int zIn) {
-    int riftId = RiftUtil.getRiftIdForChunk(xIn, zIn);
-    Biome biome = RiftWorldSaveDataAccessor.loadRift(world, riftId).type.getBiome();
+    Biome biome = getBiome(xIn, zIn);
 
     int yIn = 0;
     depthRegion = depthNoise.generateNoiseOctaves(
@@ -291,8 +301,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   }
 
   public void replaceBiomeBlocks(int x, int z, ChunkPrimer primer) {
-    int riftId = RiftUtil.getRiftIdForChunk(x, z);
-    Biome biome = RiftWorldSaveDataAccessor.loadRift(world, riftId).type.getBiome();
+    Biome biome = getBiome(x, z);
 
     double d0 = 0.03125D;
     this.depthBuffer = this.surfaceNoise
@@ -321,8 +330,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
 
   @Override
   public void populate(int x, int z) {
-    int riftId = RiftUtil.getRiftIdForChunk(x, z);
-    Biome biome = RiftWorldSaveDataAccessor.loadRift(world, riftId).type.getBiome();
+    Biome biome = getBiome(x, z);
 
     BlockFalling.fallInstantly = true;
     int i = x * 16;

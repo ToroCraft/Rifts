@@ -60,7 +60,7 @@ public class ItemRiftKeyStone extends Item {
     if (world.isRemote) {
       return EnumActionResult.PASS;
     }
-    if (PortalUtil.openRiftPortal(player, pos, facing)) {
+    if (PortalUtil.openRiftPortal(player, pos.up(), facing)) {
       return EnumActionResult.SUCCESS;
     }
     return EnumActionResult.FAIL;

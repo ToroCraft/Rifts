@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.torocraft.rifts.blocks.BlockRiftPortal;
 import net.torocraft.rifts.dim.DimensionUtil;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
+import net.torocraft.rifts.save.data.RiftData;
 
 public class PortalUtil {
 
@@ -23,14 +24,16 @@ public class PortalUtil {
     if (!(player instanceof EntityPlayerMP)) {
       return;
     }
-    int riftId = RiftWorldSaveDataAccessor.findByPos(player.world, pos);
-    DimensionUtil.travelToRift((EntityPlayerMP)player, riftId);
+    RiftData data = RiftWorldSaveDataAccessor.findByPortalPosition(player.world, pos);
+    if (data != null) {
+      DimensionUtil.travelToRift((EntityPlayerMP)player, data.riftId);
+    }
   }
 
   public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
     if (placeRiftPortalBlocks(player, pos, blockSide)) {
-      RiftWorldSaveDataAccessor.createRift(player.world, pos);
       playSound(player, SoundEvents.ENTITY_LIGHTNING_IMPACT);
+      RiftWorldSaveDataAccessor.createRift(player.world, pos);
       return true;
     } else {
       playSound(player, SoundEvents.ENTITY_CREEPER_HURT);
@@ -47,10 +50,6 @@ public class PortalUtil {
 
     if (!blockSide.equals(EnumFacing.UP)) {
       return false;
-    }
-
-    if (!isAir(world, pos)) {
-      pos = pos.up();
     }
 
     boolean xAxis = playerIsFacingXAxis(player);
