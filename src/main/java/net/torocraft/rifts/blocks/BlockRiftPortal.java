@@ -35,10 +35,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.items.ItemCrackedRiftKeyStone;
 import net.torocraft.rifts.items.ItemRiftKeyStone;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.util.PortalUtil;
+import net.torocraft.torotraits.nbt.NbtSerializer;
 
 @EventBusSubscriber
 @SuppressWarnings("deprecation")
@@ -115,7 +117,7 @@ public class BlockRiftPortal extends BlockBreakable {
   }
 
   private void dropKeyStone(World world, BlockPos pos, RiftData data) {
-    spawnItem(world, pos, createCrackedKeystone(data.riftId));
+    spawnItem(world, pos, createCrackedKeystone(data));
   }
 
   private boolean isPrimaryPortalBlock(BlockPos pos, RiftData data) {
@@ -130,12 +132,17 @@ public class BlockRiftPortal extends BlockBreakable {
     world.spawnEntity(entity);
   }
 
-  private ItemStack createCrackedKeystone(int riftId) {
-    ItemStack keystone = new ItemStack(ItemRiftKeyStone.INSTANCE, 1);
-    NBTTagCompound keystoneNbt = new NBTTagCompound();
-    keystoneNbt.setTag(Rifts.NBT_RIFT_ID, new NBTTagInt(riftId));
-    keystone.setTagCompound(keystoneNbt);
-    keystone.setStackDisplayName("Cracked Rift Keystone (" + riftId + ")");
+  private ItemStack createCrackedKeystone(RiftData data) {
+    ItemStack keystone = new ItemStack(ItemCrackedRiftKeyStone.INSTANCE, 1);
+    NBTTagCompound nbt = new NBTTagCompound();
+
+    nbt.setTag(Rifts.NBT_RIFT_ID, new NBTTagInt(data.riftId));
+    nbt.setTag(Rifts.NBT_RIFT_DATA, RiftData.toNBT(data));
+
+    System.out.println("created cracked keystone: " + nbt);
+
+    keystone.setTagCompound(nbt);
+    keystone.setStackDisplayName("Cracked Rift Keystone (" + data.riftId + ")");
     return keystone;
   }
 

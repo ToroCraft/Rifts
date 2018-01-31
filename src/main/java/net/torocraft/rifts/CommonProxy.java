@@ -14,8 +14,6 @@ public class CommonProxy {
 
   public void init(FMLInitializationEvent e) {
     DimensionManager.registerDimension(Rifts.RIFT_DIM_ID, Rifts.RIFT_DIM_TYPE);
-    BlockRiftPortal.registerRenders();
-    ItemRiftKeyStone.registerRenders();
   }
 
   public void postInit(FMLPostInitializationEvent e) {

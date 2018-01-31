@@ -26,14 +26,23 @@ public class PortalUtil {
     }
     RiftData data = RiftWorldSaveDataAccessor.findByPortalPosition(player.world, pos);
     if (data != null) {
-      DimensionUtil.travelToRift((EntityPlayerMP)player, data.riftId);
+      DimensionUtil.travelToRift((EntityPlayerMP) player, data.riftId);
     }
   }
 
   public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
+    return openRiftPortal(player, pos, blockSide, -1);
+  }
+
+  public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide,
+      int riftId) {
     if (placeRiftPortalBlocks(player, pos, blockSide)) {
       playSound(player, SoundEvents.ENTITY_LIGHTNING_IMPACT);
-      RiftWorldSaveDataAccessor.createRift(player.world, pos);
+
+      // TODO test
+      if (riftId < 0) {
+        RiftWorldSaveDataAccessor.createRift(player.world, pos);
+      }
       return true;
     } else {
       playSound(player, SoundEvents.ENTITY_CREEPER_HURT);
@@ -41,7 +50,8 @@ public class PortalUtil {
     }
   }
 
-  private static boolean placeRiftPortalBlocks(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
+  private static boolean placeRiftPortalBlocks(EntityPlayer player, BlockPos pos,
+      EnumFacing blockSide) {
     World world = player.world;
 
     if (player.dimension != 0) {
