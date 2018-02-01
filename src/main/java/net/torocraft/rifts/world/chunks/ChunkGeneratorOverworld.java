@@ -22,6 +22,7 @@ import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.save.data.RiftData;
+import net.torocraft.rifts.save.data.RiftType;
 import net.torocraft.rifts.world.RiftUtil;
 
 public class ChunkGeneratorOverworld implements IChunkGenerator {
@@ -84,13 +85,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
 
   private Biome getBiome(int xIn, int zIn) {
     int riftId = RiftUtil.getRiftIdForChunk(xIn, zIn);
-    RiftData data = RiftWorldSaveDataAccessor.loadRift(world, riftId);
-    if (data == null) {
-      System.out.println("****************** RIFT [" + riftId + "] NOT FOUND, CREATING A RANDOM ONE");
-      data = data.random(riftId);
-      RiftWorldSaveDataAccessor.saveRift(world, data);
-    }
-    return data.type.getBiome();
+    return RiftType.forRift(world.getSeed(), riftId).getBiome();
   }
 
   private void generateHeightmap(int xIn, int zIn) {

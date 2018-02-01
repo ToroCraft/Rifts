@@ -13,7 +13,6 @@ public enum RiftType {
   SWAMPLAND(Biomes.SWAMPLAND),
   RIVER(Biomes.RIVER),
   HELL(Biomes.HELL),
-  SKY(Biomes.SKY),
   FROZEN_OCEAN(Biomes.FROZEN_OCEAN),
   FROZEN_RIVER(Biomes.FROZEN_RIVER),
   ICE_PLAINS(Biomes.ICE_PLAINS),
@@ -76,7 +75,7 @@ public enum RiftType {
     return biome;
   }
 
-  public static RiftType random() {
-    return values()[new Random().nextInt(values().length)];
+  public static RiftType forRift(long worldSeed, int riftId) {
+    return values()[new Random(worldSeed + riftId).nextInt(values().length)];
   }
 }

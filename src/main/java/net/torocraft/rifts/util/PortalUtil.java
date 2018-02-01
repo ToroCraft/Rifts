@@ -31,18 +31,22 @@ public class PortalUtil {
   }
 
   public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
-    return openRiftPortal(player, pos, blockSide, -1);
-  }
-
-  public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide,
-      int riftId) {
     if (placeRiftPortalBlocks(player, pos, blockSide)) {
       playSound(player, SoundEvents.ENTITY_LIGHTNING_IMPACT);
+      RiftWorldSaveDataAccessor.createRift(player.world, pos);
+      return true;
+    } else {
+      playSound(player, SoundEvents.ENTITY_CREEPER_HURT);
+      return false;
+    }
+  }
 
-      // TODO test
-      if (riftId < 0) {
-        RiftWorldSaveDataAccessor.createRift(player.world, pos);
-      }
+  public static boolean reopenRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide,
+      RiftData data) {
+    if (placeRiftPortalBlocks(player, pos, blockSide)) {
+      playSound(player, SoundEvents.ENTITY_LIGHTNING_IMPACT);
+      data.portalLocation = pos.toLong();
+      RiftWorldSaveDataAccessor.saveRift(player.world, data);
       return true;
     } else {
       playSound(player, SoundEvents.ENTITY_CREEPER_HURT);

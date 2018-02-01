@@ -1,5 +1,6 @@
 package net.torocraft.rifts.items;
 
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,22 +56,23 @@ public class ItemCrackedRiftKeyStone extends Item {
       return EnumActionResult.PASS;
     }
 
-    RiftData data = getRiftDataFromKeystone(player, hand);
+    ItemStack keystone = player.getHeldItem(hand);
+    RiftData data = getRiftDataFromKeystone(keystone);
 
     if (data == null) {
       return EnumActionResult.PASS;
     }
 
-    if (PortalUtil.openRiftPortal(player, pos.up(), facing, data.riftId)) {
-
+    if (PortalUtil.reopenRiftPortal(player, pos.up(), facing, data)) {
+      player.setHeldItem(hand, ItemStack.EMPTY);
       return EnumActionResult.SUCCESS;
     }
 
     return EnumActionResult.FAIL;
   }
 
-  private RiftData getRiftDataFromKeystone(EntityPlayer player, EnumHand hand) {
-    ItemStack keystone = player.getHeldItem(hand);
+  @Nullable
+  private RiftData getRiftDataFromKeystone(ItemStack keystone) {
     if (isCrackedKeystone(keystone)) {
       return readRiftDataFromNbt(keystone);
     }

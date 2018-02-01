@@ -10,9 +10,6 @@ public class RiftData {
   @NbtField
   public int riftId;
 
-  @NbtField
-  public RiftType type = RiftType.PLAINS;
-
   /**
    * rift progress out of 100
    */
@@ -32,7 +29,6 @@ public class RiftData {
 
   public static RiftData random(int riftId) {
     RiftData data = new RiftData();
-    data.type = RiftType.random();
     data.riftId = riftId;
     return data;
   }

@@ -7,7 +7,6 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.save.data.RiftData;
-import net.torocraft.rifts.world.RiftUtil;
 import net.torocraft.torotraits.api.SpawnLocationScanner;
 
 public class LeaveRiftTeleporter extends Teleporter {
@@ -29,9 +28,23 @@ public class LeaveRiftTeleporter extends Teleporter {
   @Override
   public boolean placeInExistingPortal(Entity entity, float rotationYaw) {
     RiftData riftData = RiftWorldSaveDataAccessor.loadRift(world, riftId);
-    BlockPos pos = BlockPos.fromLong(riftData.portalLocation).up();
-    positionEntity(entity, rotationYaw, pos);
+    if (riftData == null) {
+      spawnAtOrigin(entity, rotationYaw);
+    } else {
+      BlockPos pos = BlockPos.fromLong(riftData.portalLocation).up();
+      positionEntity(entity, rotationYaw, pos);
+    }
     return true;
+  }
+
+  private void spawnAtOrigin(Entity entity, float rotationYaw) {
+    BlockPos origin = new BlockPos(0, world.getActualHeight(), 0);
+    SpawnLocationScanner scanner = new SpawnLocationScanner(world, entity, origin);
+    BlockPos pos = scanner.areaScan(50, world.getActualHeight(), 20);
+    if (pos == null) {
+      pos = origin;
+    }
+    positionEntity(entity, rotationYaw, pos);
   }
 
   private void positionEntity(Entity entity, float rotationYaw, BlockPos pos) {
