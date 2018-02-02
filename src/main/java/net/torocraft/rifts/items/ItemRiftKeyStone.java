@@ -6,6 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -31,6 +32,13 @@ public class ItemRiftKeyStone extends Item {
     INSTANCE = new ItemRiftKeyStone();
     INSTANCE.setRegistryName(new ResourceLocation(Rifts.MODID, NAME));
     event.getRegistry().register(INSTANCE);
+  }
+
+  @SubscribeEvent
+  public static void initRecipe(RegistryEvent.Register<IRecipe> event) {
+    IRecipe recipe = new RecipeItemRiftKeystone();
+    recipe.setRegistryName(new ResourceLocation(Rifts.MODID, NAME + "_recipe"));
+    event.getRegistry().register(recipe);
   }
 
   @SideOnly(Side.CLIENT)
