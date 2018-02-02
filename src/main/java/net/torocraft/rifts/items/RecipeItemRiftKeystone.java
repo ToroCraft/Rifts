@@ -1,8 +1,6 @@
 package net.torocraft.rifts.items;
 
-import java.util.Arrays;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.ItemStackHelper;
@@ -13,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.torocraft.rifts.Rifts;
 
 public class RecipeItemRiftKeystone extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
@@ -23,76 +22,72 @@ public class RecipeItemRiftKeystone extends IForgeRegistryEntry.Impl<IRecipe> im
 
   private final ItemStack output = new ItemStack(ItemRiftKeyStone.INSTANCE);
 
+  @Override
   public ItemStack getRecipeOutput() {
     return output;
   }
 
+  @Override
   public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
     return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
   }
 
-  public boolean matches(InventoryCrafting inv, World worldIn) {
+  @Override
+  public boolean matches(InventoryCrafting inv, World world) {
+    return getNextLevel(inv) > 0;
+  }
 
-    int size = inv.getHeight() * inv.getWidth();
+  private int getNextLevel(InventoryCrafting inv) {
+    int level = 0;
+    boolean complete = false;
 
-    if (size < 9) {
-      return false;
-    }
-
-    for (int index = 0; index < 9; index++) {
-      if (check(index, inv.getStackInSlot(index))) {
-        return true;
+    for (int index = 0; index < inv.getSizeInventory(); index++) {
+      ItemStack stack = inv.getStackInSlot(index);
+      if (stack.isEmpty()) {
+        continue;
       }
+
+      if (complete) {
+        return -1;
+      }
+
+      int thisLevel = getKeystoneLevel(stack);
+
+      if (thisLevel == 0) {
+        return -1;
+      }
+
+      if (level > 0 && !complete) {
+        complete = level == thisLevel;
+      }
+
+      level = thisLevel;
     }
 
-    return false;
+    return complete ? level + 1 : -1;
   }
 
-  private boolean check(int index, ItemStack stack) {
-    return isKeystone(stack);
-
+  private int getKeystoneLevel(ItemStack stack) {
+    if (!isKeystone(stack)){
+      return 0;
+    }
+    if (!stack.hasTagCompound()) {
+      return 1;
+    }
+    int level = stack.getTagCompound().getInteger(Rifts.NBT_RIFT_LEVEL);
+    return level == 0 ? 1 : level;
   }
-
-  private boolean isEntityEssenceItem(ItemStack stack) {
-    return stack.getItem() == Items.BONE || stack.getItem() == Items.ROTTEN_FLESH || stack.getItem() == Items.ENDER_PEARL;
-  }
-
 
   private boolean isKeystone(ItemStack stack) {
-    if (stack == null || stack.isEmpty()) {
-      return false;
-    }
-    return stack.getItem() instanceof ItemRiftKeyStone;
+    return stack != null && !stack.isEmpty() && stack.getItem() instanceof ItemRiftKeyStone;
   }
 
-  private boolean isBlock(ItemStack stack, Block block) {
-    return getBlock(stack) == block;
-  }
-
-  private Block getBlock(ItemStack stack) {
-    if (stack == null || stack.isEmpty()) {
-      return null;
-    }
-
-    if (!(stack.getItem() instanceof ItemBlock)) {
-      return null;
-    }
-
-    return ((ItemBlock) stack.getItem()).getBlock();
-  }
-
-
+  @Override
   public ItemStack getCraftingResult(InventoryCrafting inv) {
-    NonNullList<ItemStack> list = NonNullList.withSize(2, ItemStack.EMPTY);
-    list.set(0, inv.getStackInSlot(INDEX_WHITE_BLOCK));
-    list.set(1, inv.getStackInSlot(INDEX_BLACK_BLOCK));
-
     NBTTagCompound c = new NBTTagCompound();
-    ItemStackHelper.saveAllItems(c, list);
-
+    c.setInteger(Rifts.NBT_RIFT_LEVEL, getNextLevel(inv));
     ItemStack output = getRecipeOutput().copy();
     output.setTagCompound(c);
-    output.setStackDisplayName("Test Crafted Keystone");
     return output;
   }
 
