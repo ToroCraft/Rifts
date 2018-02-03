@@ -28,6 +28,7 @@ public class RiftsWorldSaveData extends WorldSavedData {
 
   public void saveRift(RiftData data) {
     saveData.rifts.put(data.riftId + "", data);
+    System.out.println("saved rift " + data.riftId);
     markDirty();
   }
 
@@ -36,9 +37,10 @@ public class RiftsWorldSaveData extends WorldSavedData {
     markDirty();
   }
 
-  public RiftData createRift(BlockPos pos) {
+  public RiftData createRift(BlockPos pos, int level) {
     RiftData data = RiftData.random(saveData.nextRift++);
     data.portalLocation = pos.toLong();
+    data.level = level;
     saveRift(data);
     return data;
   }

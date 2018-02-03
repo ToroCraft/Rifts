@@ -30,10 +30,11 @@ public class PortalUtil {
     }
   }
 
-  public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide) {
+  public static boolean openRiftPortal(EntityPlayer player, BlockPos pos, EnumFacing blockSide,
+      int level) {
     if (placeRiftPortalBlocks(player, pos, blockSide)) {
       playSound(player, SoundEvents.ENTITY_LIGHTNING_IMPACT);
-      RiftWorldSaveDataAccessor.createRift(player.world, pos);
+      RiftWorldSaveDataAccessor.createRift(player.world, pos, level);
       return true;
     } else {
       playSound(player, SoundEvents.ENTITY_CREEPER_HURT);

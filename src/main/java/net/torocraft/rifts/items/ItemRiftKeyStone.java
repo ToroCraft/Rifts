@@ -72,12 +72,17 @@ public class ItemRiftKeyStone extends Item {
     if (world.isRemote) {
       return EnumActionResult.PASS;
     }
-    if (PortalUtil.openRiftPortal(player, pos.up(), facing)) {
+
+    int level = RecipeItemRiftKeystoneUpgrade.getKeystoneLevel(player.getHeldItem(hand));
+
+    if (PortalUtil.openRiftPortal(player, pos.up(), facing, level)) {
       Timer.INSTANCE.addScheduledTask(() -> player.getHeldItem(hand).shrink(1));
       return EnumActionResult.SUCCESS;
     }
+
     return EnumActionResult.FAIL;
   }
+
 
   @SideOnly(Side.CLIENT)
   @Override

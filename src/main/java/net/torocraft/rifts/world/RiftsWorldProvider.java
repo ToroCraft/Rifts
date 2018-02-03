@@ -72,7 +72,7 @@ public class RiftsWorldProvider extends WorldProvider {
 
   @Override
   public boolean isDaytime() {
-    return true;
+    return false;
   }
 
   @Override

@@ -11,8 +11,8 @@ public class RiftWorldSaveDataAccessor {
     return get(world).loadRift(riftId);
   }
 
-  public static RiftData createRift(World world, BlockPos pos) {
-    return get(world).createRift(pos);
+  public static RiftData createRift(World world, BlockPos pos, int level) {
+    return get(world).createRift(pos, level);
   }
 
   public static RiftData findByPortalPosition(World world, BlockPos pos) {
@@ -28,7 +28,7 @@ public class RiftWorldSaveDataAccessor {
   }
 
   private static RiftsWorldSaveData get(World world) {
-    MapStorage storage = world.getPerWorldStorage();
+    MapStorage storage = world.getMapStorage();
 
     RiftsWorldSaveData instance = (RiftsWorldSaveData) storage.getOrLoadData(
         RiftsWorldSaveData.class,

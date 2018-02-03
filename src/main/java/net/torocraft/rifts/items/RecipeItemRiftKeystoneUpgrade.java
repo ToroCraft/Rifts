@@ -59,7 +59,7 @@ public class RecipeItemRiftKeystoneUpgrade extends IForgeRegistryEntry.Impl<IRec
     return complete ? level + 1 : -1;
   }
 
-  private int getKeystoneLevel(ItemStack stack) {
+  public static int getKeystoneLevel(ItemStack stack) {
     if (!isKeystone(stack)) {
       return 0;
     }
@@ -70,7 +70,7 @@ public class RecipeItemRiftKeystoneUpgrade extends IForgeRegistryEntry.Impl<IRec
     return level == 0 ? 1 : level;
   }
 
-  private boolean isKeystone(ItemStack stack) {
+  public static boolean isKeystone(ItemStack stack) {
     return stack != null && !stack.isEmpty() && stack.getItem() instanceof ItemRiftKeyStone;
   }
 

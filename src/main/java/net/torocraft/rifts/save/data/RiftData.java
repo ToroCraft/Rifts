@@ -22,6 +22,9 @@ public class RiftData {
   @NbtField
   public long portalLocation = BlockPos.ORIGIN.toLong();
 
+  @NbtField
+  public int level = 1;
+
   /**
    * when false, this data can be removed from world save
    */

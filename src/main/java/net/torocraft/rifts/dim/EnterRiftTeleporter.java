@@ -6,6 +6,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
+import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
+import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.world.RiftUtil;
 import net.torocraft.torotraits.api.SpawnLocationScanner;
 
@@ -13,11 +15,13 @@ public class EnterRiftTeleporter extends Teleporter {
 
   private final WorldServer world;
   private final int riftId;
+  private RiftData data;
 
   public EnterRiftTeleporter(WorldServer worldIn, int riftId) {
     super(worldIn);
     this.world = worldIn;
     this.riftId = riftId;
+    data = RiftWorldSaveDataAccessor.loadRift(world, riftId);
   }
 
   @Override
@@ -42,7 +46,8 @@ public class EnterRiftTeleporter extends Teleporter {
     positionEntity(entity, rotationYaw, spawnLocation);
 
     if (entity instanceof EntityPlayerMP) {
-      entity.sendMessage(new TextComponentString("Welcome to Rift " + riftId));
+      entity.sendMessage(new TextComponentString(
+          "Welcome to Rift " + riftId + " a level " + data.level + " rift."));
     }
 
     return true;
