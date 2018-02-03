@@ -11,10 +11,18 @@ public class RiftData {
   public int riftId;
 
   /**
-   * rift progress out of 100
+   * rift progress out of 1000
    */
   @NbtField
   public int progress;
+
+  /**
+   * rift time in rift ticks (1/10sec)
+   *
+   * 10 minutes = 60 rift ticks
+   */
+  @NbtField
+  public int time;
 
   /**
    * the location of the rift portal in the overworld, a BlockPos packed into a long

@@ -4,11 +4,14 @@ package net.torocraft.rifts.dim;
 import java.util.Random;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.RiftsConfig;
@@ -24,28 +27,52 @@ public class RiftHandler {
   private static final int MAX_ENTITIES_IN_AREA = 100;
 
   @SubscribeEvent
-  public static void init(PlayerTickEvent event) {
-    if (!isRiftTick(event)) {
-      return;
+  public static void onPlayerTick(PlayerTickEvent event) {
+    if (isRiftTick(event)) {
+      RiftData data = loadRift(event);
+      data.time++;
+      spawnRiftMobs(event, data);
+      RiftWorldSaveDataAccessor.saveRift(event.player.world, data);
     }
-    spawnRiftMobs(event);
   }
 
+  @SubscribeEvent
+  public static void onXpPickup(LivingExperienceDropEvent event) {
+    EntityPlayer player = event.getAttackingPlayer();
+    if (player.dimension != Rifts.RIFT_DIM_ID) {
+      return;
+    }
+
+    event.setCanceled(true);
+
+    int riftId = RiftUtil.getRiftIdForChunk(player.chunkCoordX, player.chunkCoordZ);
+
+    RiftData data = RiftWorldSaveDataAccessor.loadRift(player.world, riftId);
+
+    if (data == null) {
+      return;
+    }
+
+    data.progress += event.getDroppedExperience();
+    RiftWorldSaveDataAccessor.saveRift(player.world, data);
+  }
 
   private static boolean isRiftTick(PlayerTickEvent e) {
-    return !e.player.world.isRemote && e.player.dimension == Rifts.RIFT_DIM_ID;
+    return !e.player.world.isRemote &&
+        Phase.END.equals(e.phase) &&
+        onlyInRift(e) &&
+        onlyEveryTenSeconds(e);
   }
 
+  private static boolean onlyInRift(PlayerTickEvent e) {
+    return e.player.dimension == Rifts.RIFT_DIM_ID;
+  }
 
-  private static void spawnRiftMobs(PlayerTickEvent event) {
-    if (event.player.world.getTotalWorldTime() % 200 != 0) {
-      return;
-    }
+  private static boolean onlyEveryTenSeconds(PlayerTickEvent event) {
+    return event.player.world.getTotalWorldTime() % 200 == 0;
+  }
 
-    RiftData data = loadRift(event);
-    System.out.println("****event rift[" + data.riftId + "] level[" + data.level + "] **");
-    System.out.println("for player " + event.player.getName());
-
+  private static void spawnRiftMobs(PlayerTickEvent event, RiftData data) {
     if (!tooManyEntities(event)) {
       spawnRiftMob(event.player.world, event.player.getPosition());
     }
