@@ -2,10 +2,7 @@ package net.torocraft.rifts.world.chunks;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import javax.annotation.Nullable;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +11,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraftforge.event.ForgeEventFactory;
 
 public class MarginChunkProvider implements IChunkGenerator {
 

@@ -1,8 +1,11 @@
 package net.torocraft.rifts.items;
 
+import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.util.PortalUtil;
+import net.torocraft.rifts.util.Timer;
 
 @EventBusSubscriber
 public class ItemCrackedRiftKeyStone extends Item {
@@ -64,7 +68,7 @@ public class ItemCrackedRiftKeyStone extends Item {
     }
 
     if (PortalUtil.reopenRiftPortal(player, pos.up(), facing, data)) {
-      player.setHeldItem(hand, ItemStack.EMPTY);
+      Timer.INSTANCE.addScheduledTask(() -> player.getHeldItem(hand).shrink(1));
       return EnumActionResult.SUCCESS;
     }
 
@@ -90,6 +94,18 @@ public class ItemCrackedRiftKeyStone extends Item {
       e.printStackTrace();
       return null;
     }
+  }
+
+  @SideOnly(Side.CLIENT)
+  @Override
+  public void addInformation(ItemStack stack, World world, List<String> tooltip,
+      ITooltipFlag flagIn) {
+    super.addInformation(stack, world, tooltip, flagIn);
+    if (!stack.hasTagCompound()) {
+      return;
+    }
+    int riftId = stack.getTagCompound().getInteger(Rifts.NBT_RIFT_ID);
+    tooltip.add(I18n.format("item." + NAME + ".tooltip", riftId));
   }
 
 }

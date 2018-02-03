@@ -1,7 +1,10 @@
 package net.torocraft.rifts.items;
 
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,12 +17,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.util.PortalUtil;
+import net.torocraft.rifts.util.Timer;
 
 @EventBusSubscriber
 public class ItemRiftKeyStone extends Item {
@@ -36,8 +41,12 @@ public class ItemRiftKeyStone extends Item {
 
   @SubscribeEvent
   public static void initRecipe(RegistryEvent.Register<IRecipe> event) {
-    IRecipe recipe = new RecipeItemRiftKeystone();
-    recipe.setRegistryName(new ResourceLocation(Rifts.MODID, NAME + "_recipe"));
+    loadRecipe(event, new RecipeItemRiftKeystoneUpgrade(), "_upgrade_recipe");
+    loadRecipe(event, new RecipeItemRiftKeystoneDowngrade(), "_downgrade_recipe");
+  }
+
+  private static void loadRecipe(Register<IRecipe> event, IRecipe recipe, String suffix) {
+    recipe.setRegistryName(new ResourceLocation(Rifts.MODID, NAME + suffix));
     event.getRegistry().register(recipe);
   }
 
@@ -64,10 +73,22 @@ public class ItemRiftKeyStone extends Item {
       return EnumActionResult.PASS;
     }
     if (PortalUtil.openRiftPortal(player, pos.up(), facing)) {
-      player.setHeldItem(hand, ItemStack.EMPTY);
+      Timer.INSTANCE.addScheduledTask(() -> player.getHeldItem(hand).shrink(1));
       return EnumActionResult.SUCCESS;
     }
     return EnumActionResult.FAIL;
+  }
+
+  @SideOnly(Side.CLIENT)
+  @Override
+  public void addInformation(ItemStack stack, World world, List<String> tooltip,
+      ITooltipFlag flagIn) {
+    super.addInformation(stack, world, tooltip, flagIn);
+    if (!stack.hasTagCompound()) {
+      return;
+    }
+    int level = stack.getTagCompound().getInteger(Rifts.NBT_RIFT_LEVEL);
+    tooltip.add(I18n.format("item." + NAME + ".tooltip", level));
   }
 
 }

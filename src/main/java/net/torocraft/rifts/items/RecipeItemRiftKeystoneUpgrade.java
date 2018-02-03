@@ -1,10 +1,6 @@
 package net.torocraft.rifts.items;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,12 +9,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.torocraft.rifts.Rifts;
 
-public class RecipeItemRiftKeystone extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
-
-  public static final String NBT_WHITE_BLOCK_KEY = "white_checker_block";
-  public static final String NBT_BLACK_BLOCK_KEY = "black_checker_block";
-  private static final int INDEX_WHITE_BLOCK = 3;
-  private static final int INDEX_BLACK_BLOCK = 5;
+public class RecipeItemRiftKeystoneUpgrade extends IForgeRegistryEntry.Impl<IRecipe> implements
+    IRecipe {
 
   private final ItemStack output = new ItemStack(ItemRiftKeyStone.INSTANCE);
 
@@ -68,7 +60,7 @@ public class RecipeItemRiftKeystone extends IForgeRegistryEntry.Impl<IRecipe> im
   }
 
   private int getKeystoneLevel(ItemStack stack) {
-    if (!isKeystone(stack)){
+    if (!isKeystone(stack)) {
       return 0;
     }
     if (!stack.hasTagCompound()) {
@@ -93,7 +85,7 @@ public class RecipeItemRiftKeystone extends IForgeRegistryEntry.Impl<IRecipe> im
 
   @Override
   public boolean canFit(int width, int height) {
-    return width * height >= 9;
+    return width * height >= 2;
   }
 
 }

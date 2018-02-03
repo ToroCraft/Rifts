@@ -26,7 +26,8 @@ public class DimensionUtil {
     return player.mcServer.getWorld(dimId);
   }
 
-  private static void changePlayerDimension(EntityPlayerMP player, int dimId, Teleporter teleporter) {
+  private static void changePlayerDimension(EntityPlayerMP player, int dimId,
+      Teleporter teleporter) {
     if (!ForgeHooks.onTravelToDimension(player, dimId)) {
       return;
     }

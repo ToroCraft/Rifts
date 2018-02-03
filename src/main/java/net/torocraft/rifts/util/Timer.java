@@ -16,7 +16,6 @@ public class Timer {
     if (queue.size() < 1) {
       return;
     }
-    System.out.println("check timer queue");
     runNextQueueItem();
   }
 

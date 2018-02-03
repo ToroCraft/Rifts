@@ -1,0 +1,4 @@
+item.rift_keystone.name=Rift Keystone
+item.cracked_rift_keystone.name=Cracked Rift Keystone
+item.rift_keystone.tooltip=Rift Level %s
+item.cracked_rift_keystone.tooltip=Rift %s

@@ -20,8 +20,6 @@ import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
-import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
-import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.save.data.RiftType;
 import net.torocraft.rifts.world.RiftUtil;
 

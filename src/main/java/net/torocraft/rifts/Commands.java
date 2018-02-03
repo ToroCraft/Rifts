@@ -97,7 +97,8 @@ public class Commands extends CommandBase {
 
     BlockPos pos = player.getPosition().north().north().up();
 
-    server.getWorld(player.dimension).setBlockState(pos, BlockRiftPortal.INSTANCE.getDefaultState());
+    server.getWorld(player.dimension)
+        .setBlockState(pos, BlockRiftPortal.INSTANCE.getDefaultState());
 
   }
 

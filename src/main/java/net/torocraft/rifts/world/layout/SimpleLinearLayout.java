@@ -8,7 +8,7 @@ public class SimpleLinearLayout implements RiftLayout {
 
   @Override
   public int[] indexToPoint(int index) {
-    return new int []{index, 0};
+    return new int[]{index, 0};
   }
 
   @Override

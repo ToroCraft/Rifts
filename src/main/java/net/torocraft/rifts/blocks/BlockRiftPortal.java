@@ -36,11 +36,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.items.ItemCrackedRiftKeyStone;
-import net.torocraft.rifts.items.ItemRiftKeyStone;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.util.PortalUtil;
-import net.torocraft.torotraits.nbt.NbtSerializer;
 
 @EventBusSubscriber
 @SuppressWarnings("deprecation")
@@ -139,10 +137,7 @@ public class BlockRiftPortal extends BlockBreakable {
     nbt.setTag(Rifts.NBT_RIFT_ID, new NBTTagInt(data.riftId));
     nbt.setTag(Rifts.NBT_RIFT_DATA, RiftData.toNBT(data));
 
-    System.out.println("created cracked keystone: " + nbt);
-
     keystone.setTagCompound(nbt);
-    keystone.setStackDisplayName("Cracked Rift Keystone (" + data.riftId + ")");
     return keystone;
   }
 

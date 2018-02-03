@@ -7,7 +7,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.torocraft.rifts.world.RiftUtil;
-import net.torocraft.torotraits.api.SpawnApi;
 import net.torocraft.torotraits.api.SpawnLocationScanner;
 
 public class EnterRiftTeleporter extends Teleporter {
