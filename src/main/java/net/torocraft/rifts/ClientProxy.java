@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.torocraft.rifts.blocks.BlockRiftPortal;
 import net.torocraft.rifts.items.ItemCrackedRiftKeyStone;
 import net.torocraft.rifts.items.ItemRiftKeyStone;
+import net.torocraft.rifts.items.ItemRiftReturnStone;
 
 public class ClientProxy extends CommonProxy {
 
@@ -14,6 +15,7 @@ public class ClientProxy extends CommonProxy {
     BlockRiftPortal.registerRenders();
     ItemRiftKeyStone.registerRenders();
     ItemCrackedRiftKeyStone.registerRenders();
+    ItemRiftReturnStone.registerRenders();
   }
 
   @Override

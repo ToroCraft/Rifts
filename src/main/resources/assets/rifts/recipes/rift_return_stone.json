@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ggg",
+    "grg",
+    "ggg"
+  ],
+  "key": {
+    "g": {
+      "item": "minecraft:gold_nugget"
+    },
+    "r": {
+      "item": "rifts:rift_keystone"
+    }
+  },
+  "result": {
+    "item": "rifts:rift_return_stone"
+  }
+}
