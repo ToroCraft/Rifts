@@ -13,8 +13,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.RiftsConfig;
+import net.torocraft.rifts.network.MessageRiftUpdate;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.world.RiftUtil;
@@ -33,7 +35,17 @@ public class RiftHandler {
       data.time++;
       spawnRiftMobs(event, data);
       RiftWorldSaveDataAccessor.saveRift(event.player.world, data);
+      syncPlayers(event.player, data);
     }
+  }
+
+  private static void syncPlayers(EntityPlayer player, RiftData data) {
+    TargetPoint point = new TargetPoint(
+        Rifts.RIFT_DIM_ID,
+        player.posX, player.posY, player.posZ,
+        RiftUtil.RIFT_DISTANCE
+    );
+    Rifts.NETWORK.sendToAllAround(new MessageRiftUpdate(data), point);
   }
 
   @SubscribeEvent
@@ -44,17 +56,15 @@ public class RiftHandler {
     }
 
     event.setCanceled(true);
-
     int riftId = RiftUtil.getRiftIdForChunk(player.chunkCoordX, player.chunkCoordZ);
-
     RiftData data = RiftWorldSaveDataAccessor.loadRift(player.world, riftId);
-
     if (data == null) {
       return;
     }
 
     data.progress += event.getDroppedExperience();
     RiftWorldSaveDataAccessor.saveRift(player.world, data);
+    syncPlayers(event.getAttackingPlayer(), data);
   }
 
   private static boolean isRiftTick(PlayerTickEvent e) {

@@ -1,5 +1,6 @@
 package net.torocraft.rifts.world;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
@@ -14,6 +15,8 @@ import net.torocraft.rifts.world.chunks.RiftsChunkProvider;
 
 public class RiftsWorldProvider extends WorldProvider {
 
+  private static final Vec3d COLOR = new Vec3d(0.1, 0D, 0.2D);
+
   public RiftsWorldProvider() {
     this.biomeProvider = new BiomeProviderSingle(Biomes.VOID);
     this.hasSkyLight = false;
@@ -26,7 +29,7 @@ public class RiftsWorldProvider extends WorldProvider {
   @Override
   @SideOnly(Side.CLIENT)
   public Vec3d getFogColor(float par1, float par2) {
-    return new Vec3d(0D, 0D, 0D);
+    return COLOR;
   }
 
   @Override
@@ -56,8 +59,13 @@ public class RiftsWorldProvider extends WorldProvider {
   }
 
   @Override
+  public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
+    return COLOR;
+  }
+
+  @Override
   public boolean isSkyColored() {
-    return false;
+    return true;
   }
 
   @Override
