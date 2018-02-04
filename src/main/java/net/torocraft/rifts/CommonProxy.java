@@ -6,6 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.torocraft.rifts.entities.Entities;
 import net.torocraft.rifts.network.MessageRiftUpdate;
 import net.torocraft.rifts.network.MessageSetRift;
 
@@ -13,6 +14,7 @@ public class CommonProxy {
 
   public void preInit(FMLPreInitializationEvent e) {
     initConfig(e.getSuggestedConfigurationFile());
+    Entities.init();
   }
 
   public void init(FMLInitializationEvent e) {

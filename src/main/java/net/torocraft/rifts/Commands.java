@@ -15,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.torocraft.rifts.blocks.BlockRiftPortal;
 import net.torocraft.rifts.dim.DimensionUtil;
+import net.torocraft.rifts.dim.GuardianSpawner;
 import net.torocraft.rifts.world.RiftUtil;
 
 public class Commands extends CommandBase {
@@ -55,6 +56,9 @@ public class Commands extends CommandBase {
       case "leave":
         leave(server, sender, args);
         return;
+      case "guardian":
+        guardian(server, sender, args);
+        return;
       case "create_portal":
         createPortal(server, sender, args);
         return;
@@ -62,6 +66,17 @@ public class Commands extends CommandBase {
         throw new WrongUsageException("commands.rifts.command_not_found");
     }
   }
+
+  private void guardian(MinecraftServer server, ICommandSender sender, String[] args)
+      throws CommandException {
+    if (!(sender instanceof EntityPlayer)) {
+      return;
+    }
+
+    EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+    GuardianSpawner.spawnRiftGuardianAroundPlayer(player);
+  }
+
 
   private void enter(MinecraftServer server, ICommandSender sender, String[] args)
       throws CommandException {
@@ -123,7 +138,7 @@ public class Commands extends CommandBase {
   public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender,
       String[] args, @Nullable BlockPos targetPos) {
     if (args.length == 1) {
-      return getListOfStringsMatchingLastWord(args, "enter", "leave", "create_portal");
+      return getListOfStringsMatchingLastWord(args, "enter", "leave", "create_portal", "guardian");
     }
     String command = args[0];
     switch (command) {

@@ -3,13 +3,21 @@ package net.torocraft.rifts;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.torocraft.rifts.blocks.BlockRiftPortal;
+import net.torocraft.rifts.entities.Entities;
 import net.torocraft.rifts.gui.GuiRiftStatus;
 import net.torocraft.rifts.items.ItemCrackedRiftKeyStone;
 import net.torocraft.rifts.items.ItemRiftKeyStone;
 import net.torocraft.rifts.items.ItemRiftReturnStone;
 
 public class ClientProxy extends CommonProxy {
+
+  @Override
+  public void preInit(FMLPreInitializationEvent e) {
+    super.preInit(e);
+    Entities.registerRenders();
+  }
 
   @Override
   public void init(FMLInitializationEvent e) {
