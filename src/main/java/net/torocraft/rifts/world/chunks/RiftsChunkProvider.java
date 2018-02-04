@@ -22,7 +22,7 @@ public class RiftsChunkProvider implements IChunkGenerator {
   private final BiomeChunkProvider biome;
   private final ChunkGeneratorHell hell;
   private final MarginChunkProvider margin;
-  private final ChunkGeneratorOverworld overworld;
+  private final BiomedRiftChunkProvider overworld;
 
   public RiftsChunkProvider(World world) {
     this.world = world;
@@ -32,7 +32,7 @@ public class RiftsChunkProvider implements IChunkGenerator {
     biome = new BiomeChunkProvider(world);
     hell = new ChunkGeneratorHell(world, false, world.getSeed());
     margin = new MarginChunkProvider(world);
-    overworld = new ChunkGeneratorOverworld(world);
+    overworld = new BiomedRiftChunkProvider(world);
   }
 
   private IChunkGenerator getGenerator(int chunkX, int chunkZ) {

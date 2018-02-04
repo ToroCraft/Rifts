@@ -1,13 +1,20 @@
 package net.torocraft.rifts.dim;
 
 import java.lang.reflect.Field;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.network.MessageRiftUpdate;
 import net.torocraft.rifts.network.MessageSetRift;
+import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.util.Timer;
+import net.torocraft.rifts.world.RiftUtil;
 
 public class DimensionUtil {
 
@@ -101,4 +108,27 @@ public class DimensionUtil {
     return sbStr.toString();
   }
 
+  public static boolean isRiftTick(PlayerTickEvent e) {
+    return !e.player.world.isRemote &&
+        Phase.END.equals(e.phase) &&
+        onlyInRift(e) &&
+        onlyEveryFiveSeconds(e);
+  }
+
+  public static boolean onlyInRift(PlayerTickEvent e) {
+    return e.player.dimension == Rifts.RIFT_DIM_ID;
+  }
+
+  public static boolean onlyEveryFiveSeconds(PlayerTickEvent event) {
+    return event.player.world.getTotalWorldTime() % 100 == 0;
+  }
+
+  public static void syncPlayers(EntityPlayer player, RiftData data) {
+    TargetPoint point = new TargetPoint(
+        Rifts.RIFT_DIM_ID,
+        player.posX, player.posY, player.posZ,
+        RiftUtil.RIFT_DISTANCE
+    );
+    Rifts.NETWORK.sendToAllAround(new MessageRiftUpdate(data), point);
+  }
 }

@@ -48,12 +48,7 @@ public class EnterRiftTeleporter extends Teleporter {
     positionEntity(entity, rotationYaw, spawnLocation);
 
     if (entity instanceof EntityPlayerMP) {
-      entity.sendMessage(new TextComponentString(
-          "Welcome to Rift " + riftId + " a level " + data.level + " rift."));
-      //Timer.INSTANCE.addScheduledTask(() ->
       Rifts.NETWORK.sendTo(new MessageSetRift(data), (EntityPlayerMP) entity);
-
-      //, 10);
     }
 
     return true;

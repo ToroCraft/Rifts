@@ -9,7 +9,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
@@ -23,7 +22,7 @@ import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.torocraft.rifts.save.data.RiftType;
 import net.torocraft.rifts.world.RiftUtil;
 
-public class ChunkGeneratorOverworld implements IChunkGenerator {
+public class BiomedRiftChunkProvider implements IChunkGenerator {
 
   protected static final IBlockState STONE = Blocks.STONE.getDefaultState();
   private final Random rand;
@@ -45,11 +44,8 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   double[] maxLimitRegion;
   double[] depthRegion;
 
-  //private final Biome biome = Biomes.PLAINS;
-
-  public ChunkGeneratorOverworld(World worldIn) {
+  public BiomedRiftChunkProvider(World worldIn) {
     long seed = worldIn.getSeed();
-    boolean mapFeaturesEnabledIn = false;
 
     this.world = worldIn;
     this.terrainType = worldIn.getWorldInfo().getTerrainType();
@@ -86,8 +82,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
     return RiftType.forRift(world.getSeed(), riftId).getBiome();
   }
 
-  private void generateHeightmap(int xIn, int zIn) {
-    Biome biome = getBiome(xIn, zIn);
+  private void generateHeightmap(int xIn, int zIn, Biome biome) {
 
     int yIn = 0;
     depthRegion = depthNoise.generateNoiseOctaves(
@@ -126,15 +121,13 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
         float f2 = 0.0F;
         float f3 = 0.0F;
         float f4 = 0.0F;
-        int i1 = 2;
 
         for (int j1 = -2; j1 <= 2; ++j1) {
           for (int k1 = -2; k1 <= 2; ++k1) {
-            Biome biome1 = biome;
             float f5 = settings.biomeDepthOffSet
-                + biome1.getBaseHeight() * settings.biomeDepthWeight;
+                + biome.getBaseHeight() * settings.biomeDepthWeight;
             float f6 = settings.biomeScaleOffset
-                + biome1.getHeightVariation() * settings.biomeScaleWeight;
+                + biome.getHeightVariation() * settings.biomeScaleWeight;
 
             if (terrainType == WorldType.AMPLIFIED && f5 > 0.0F) {
               f5 = 1.0F + f5 * 2.0F;
@@ -211,9 +204,9 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
     }
   }
 
-  public void setBlocksInChunk(int xIn, int zIn, ChunkPrimer primer) {
+  public void setBlocksInChunk(int xIn, int zIn, ChunkPrimer primer, Biome biome) {
     int riftId = RiftUtil.getRiftIdForChunk(xIn, zIn);
-    generateHeightmap(xIn * 4, zIn * 4);
+    generateHeightmap(xIn * 4, zIn * 4, biome);
 
     for (int i = 0; i < 4; ++i) {
       int j = i * 5;
@@ -226,7 +219,6 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
         int l1 = (k + l + 1) * 33;
 
         for (int i2 = 0; i2 < 32; ++i2) {
-          double d0 = 0.125D;
           double d1 = this.heightMap[i1 + i2];
           double d2 = this.heightMap[j1 + i2];
           double d3 = this.heightMap[k1 + i2];
@@ -237,7 +229,6 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
           double d8 = (this.heightMap[l1 + i2 + 1] - d4) * 0.125D;
 
           for (int j2 = 0; j2 < 8; ++j2) {
-            double d9 = 0.25D;
             double d10 = d1;
             double d11 = d2;
             double d12 = (d3 - d1) * 0.25D;
@@ -249,7 +240,6 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
 
               int x = i * 4 + k2;
 
-              double d14 = 0.25D;
               double nextStep = (d11 - d10) * 0.25D;
               double currentLevel = d10 - nextStep;
 
@@ -293,10 +283,7 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
     return chance > rand.nextDouble();
   }
 
-  public void replaceBiomeBlocks(int x, int z, ChunkPrimer primer) {
-    Biome biome = getBiome(x, z);
-
-    double d0 = 0.03125D;
+  public void replaceBiomeBlocks(int x, int z, ChunkPrimer primer, Biome biome) {
     this.depthBuffer = this.surfaceNoise
         .getRegion(this.depthBuffer, (double) (x * 16), (double) (z * 16), 16, 16, 0.0625D, 0.0625D,
             1.0D);
@@ -312,9 +299,10 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
   @Override
   public Chunk generateChunk(int x, int z) {
     this.rand.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
+    Biome biome = getBiome(x, z);
     ChunkPrimer chunkprimer = new ChunkPrimer();
-    this.setBlocksInChunk(x, z, chunkprimer);
-    this.replaceBiomeBlocks(x, z, chunkprimer);
+    this.setBlocksInChunk(x, z, chunkprimer, biome);
+    this.replaceBiomeBlocks(x, z, chunkprimer, biome);
 
     Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
     chunk.generateSkylightMap();
@@ -328,90 +316,15 @@ public class ChunkGeneratorOverworld implements IChunkGenerator {
     BlockFalling.fallInstantly = true;
     int i = x * 16;
     int j = z * 16;
-    BlockPos blockpos = new BlockPos(i, 0, j);
     this.rand.setSeed(this.world.getSeed());
     long k = this.rand.nextLong() / 2L * 2L + 1L;
     long l = this.rand.nextLong() / 2L * 2L + 1L;
     this.rand.setSeed((long) x * k + (long) z * l ^ this.world.getSeed());
-    ChunkPos chunkpos = new ChunkPos(x, z);
 
     net.minecraftforge.event.ForgeEventFactory
         .onChunkPopulate(true, this, this.world, this.rand, x, z, false);
-/*
-    if (biome != Biomes.DESERT && biome != Biomes.DESERT_HILLS && this.settings.useWaterLakes
-        && !flag && this.rand.nextInt(this.settings.waterLakeChance) == 0) {
-      if (net.minecraftforge.event.terraingen.TerrainGen
-          .populate(this, this.world, this.rand, x, z, flag,
-              net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.LAKE)) {
-        int i1 = this.rand.nextInt(16) + 8;
-        int j1 = this.rand.nextInt(256);
-        int k1 = this.rand.nextInt(16) + 8;
-        (new WorldGenLakes(Blocks.WATER))
-            .generate(this.world, this.rand, blockpos.add(i1, j1, k1));
-      }
-    }
 
-    if (!flag && this.rand.nextInt(this.settings.lavaLakeChance / 10) == 0
-        && this.settings.useLavaLakes) {
-      if (net.minecraftforge.event.terraingen.TerrainGen
-          .populate(this, this.world, this.rand, x, z, flag,
-              net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.LAVA)) {
-        int i2 = this.rand.nextInt(16) + 8;
-        int l2 = this.rand.nextInt(this.rand.nextInt(248) + 8);
-        int k3 = this.rand.nextInt(16) + 8;
-
-        if (l2 < this.world.getSeaLevel()
-            || this.rand.nextInt(this.settings.lavaLakeChance / 8) == 0) {
-          (new WorldGenLakes(Blocks.LAVA))
-              .generate(this.world, this.rand, blockpos.add(i2, l2, k3));
-        }
-      }
-    }
-
-    if (this.settings.useDungeons) {
-      if (net.minecraftforge.event.terraingen.TerrainGen
-          .populate(this, this.world, this.rand, x, z, flag,
-              net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.DUNGEON)) {
-        for (int j2 = 0; j2 < this.settings.dungeonChance; ++j2) {
-          int i3 = this.rand.nextInt(16) + 8;
-          int l3 = this.rand.nextInt(256);
-          int l1 = this.rand.nextInt(16) + 8;
-          (new WorldGenDungeons())
-              .generate(this.world, this.rand, blockpos.add(i3, l3, l1));
-        }
-      }
-    }
-*/
     biome.decorate(this.world, this.rand, new BlockPos(i, 0, j));
-
-//    if (net.minecraftforge.event.terraingen.TerrainGen
-//        .populate(this, this.world, this.rand, x, z, flag,
-//            net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.ANIMALS)) {
-//      WorldEntitySpawner
-//          .performWorldGenSpawning(this.world, biome, i + 8, j + 8, 16, 16, this.rand);
-//    }
-    //   blockpos = blockpos.add(8, 0, 8);
-
-    /*
-    if (net.minecraftforge.event.terraingen.TerrainGen
-        .populate(this, this.world, this.rand, x, z, flag,
-            net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.ICE)) {
-      for (int k2 = 0; k2 < 16; ++k2) {
-        for (int j3 = 0; j3 < 16; ++j3) {
-          BlockPos blockpos1 = this.world.getPrecipitationHeight(blockpos.add(k2, 0, j3));
-          BlockPos blockpos2 = blockpos1.down();
-
-          if (this.world.canBlockFreezeWater(blockpos2)) {
-            this.world.setBlockState(blockpos2, Blocks.ICE.getDefaultState(), 2);
-          }
-
-          if (this.world.canSnowAt(blockpos1, true)) {
-            this.world.setBlockState(blockpos1, Blocks.SNOW_LAYER.getDefaultState(), 2);
-          }
-        }
-      }
-    }//Forge: End ICE
-    */
 
     BlockFalling.fallInstantly = false;
   }
