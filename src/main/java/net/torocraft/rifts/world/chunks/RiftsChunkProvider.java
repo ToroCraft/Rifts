@@ -8,50 +8,25 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkGeneratorHell;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.torocraft.rifts.world.RiftUtil;
 
 public class RiftsChunkProvider implements IChunkGenerator {
 
-  private final World world;
-
   private final EmptyChunkProvider empty;
-  private final TeletoryChunkProvider teletory;
-  private final FlatChunkProvider flat;
-  private final BiomeChunkProvider biome;
-  private final ChunkGeneratorHell hell;
-  private final MarginChunkProvider margin;
-  private final BiomedRiftChunkProvider overworld;
+  private final BiomedRiftChunkProvider biomed;
 
   public RiftsChunkProvider(World world) {
-    this.world = world;
     empty = new EmptyChunkProvider(world);
-    teletory = new TeletoryChunkProvider(world, world.getSeed());
-    flat = new FlatChunkProvider(world);
-    biome = new BiomeChunkProvider(world);
-    hell = new ChunkGeneratorHell(world, false, world.getSeed());
-    margin = new MarginChunkProvider(world);
-    overworld = new BiomedRiftChunkProvider(world);
+    biomed = new BiomedRiftChunkProvider(world);
   }
 
   private IChunkGenerator getGenerator(int chunkX, int chunkZ) {
     int riftId = RiftUtil.getRiftIdForChunk(chunkX, chunkZ);
-
     if (riftId < 0) {
       return empty;
     }
-//    if (riftId % 3 == 0) {
-//      return flat;
-//    }
-//    if (riftId % 2 == 0) {
-//      return teletory;
-//    }
-//    if (riftId % 1 == 0) {
-//      return hell;
-//    }
-
-    return overworld;
+    return biomed;
   }
 
   @Override

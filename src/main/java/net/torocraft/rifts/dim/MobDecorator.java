@@ -82,7 +82,7 @@ public class MobDecorator {
     int weaponRoll = entity.getRNG().nextInt(WEAPONS.length);
 
     armorRoll = Math.min(maxRoll, armorRoll);
-    weaponRoll = Math.max(maxRoll * 5, weaponRoll);
+    weaponRoll = Math.min(maxRoll * 5, weaponRoll);
 
     ItemStack helmet = new ItemStack(HELMETS[armorRoll]);
     ItemStack chestPlate = new ItemStack(CHEST_PLATES[armorRoll]);
@@ -90,7 +90,6 @@ public class MobDecorator {
     ItemStack boots = new ItemStack(BOOTS[armorRoll]);
     ItemStack weapon = new ItemStack(WEAPONS[weaponRoll]);
 
-    // TODO enchant based on level
     entity.setItemStackToSlot(EntityEquipmentSlot.HEAD, helmet);
     entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, chestPlate);
     entity.setItemStackToSlot(EntityEquipmentSlot.LEGS, leggings);
