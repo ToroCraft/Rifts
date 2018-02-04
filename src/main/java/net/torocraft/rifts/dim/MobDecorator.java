@@ -98,18 +98,18 @@ public class MobDecorator {
     entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon);
   }
 
-  private static void setAttributes(EntityLiving entity, int riftLevel) {
-    // TODO base of rift level
+  private static void setAttributes(EntityLiving entity, int level) {
 
-    double factor = 0.1;
+    double healthFactor = 0.6 + (level / 30d);
+    double attackFactor = 0.6 + (level / 40d);
 
     for (IAttributeInstance attribute : entity.getAttributeMap().getAllAttributes()) {
       if (attribute.getAttribute() == SharedMonsterAttributes.ATTACK_DAMAGE) {
-        attribute.setBaseValue(attribute.getAttributeValue() * factor);
+        attribute.setBaseValue(attribute.getAttributeValue() * attackFactor);
       }
 
       if (attribute.getAttribute() == SharedMonsterAttributes.MAX_HEALTH) {
-        attribute.setBaseValue(attribute.getAttributeValue() * factor);
+        attribute.setBaseValue(attribute.getAttributeValue() * healthFactor);
         entity.setHealth(entity.getMaxHealth());
       }
     }

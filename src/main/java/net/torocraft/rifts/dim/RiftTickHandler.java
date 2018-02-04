@@ -16,6 +16,9 @@ public class RiftTickHandler {
   public static void onPlayerTick(PlayerTickEvent event) {
     if (DimensionUtil.isRiftTick(event)) {
       RiftData data = loadPlayerRift(event.player);
+      if (data == null) {
+        return;
+      }
       data.time++;
       MobSpawner.spawnRiftMobsAroundPlayer(event.player, data);
       RiftWorldSaveDataAccessor.saveRift(event.player.world, data);
