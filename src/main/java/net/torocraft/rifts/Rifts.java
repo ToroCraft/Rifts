@@ -37,7 +37,7 @@ public class Rifts {
   public static CommonProxy proxy;
 
   @Instance(value = Rifts.MODID)
-  public static Rifts instance;
+  public static Rifts INSTANCE;
 
   public static SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 

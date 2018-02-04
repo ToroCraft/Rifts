@@ -71,15 +71,15 @@ public class RiftHandler {
     return !e.player.world.isRemote &&
         Phase.END.equals(e.phase) &&
         onlyInRift(e) &&
-        onlyEveryTenSeconds(e);
+        onlyEveryFiveSeconds(e);
   }
 
   private static boolean onlyInRift(PlayerTickEvent e) {
     return e.player.dimension == Rifts.RIFT_DIM_ID;
   }
 
-  private static boolean onlyEveryTenSeconds(PlayerTickEvent event) {
-    return event.player.world.getTotalWorldTime() % 200 == 0;
+  private static boolean onlyEveryFiveSeconds(PlayerTickEvent event) {
+    return event.player.world.getTotalWorldTime() % 100 == 0;
   }
 
   private static void spawnRiftMobs(PlayerTickEvent event, RiftData data) {
