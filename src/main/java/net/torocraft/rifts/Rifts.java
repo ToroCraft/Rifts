@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.util.Timer;
 import net.torocraft.rifts.world.RiftsWorldProvider;
 
@@ -27,8 +26,6 @@ public class Rifts {
   public static final String NBT_RIFT_ID = "torocraft_rift_id";
   public static final String NBT_RIFT_DATA = "torocraft_rift_data";
   public static final String NBT_RIFT_LEVEL = "torocraft_rift_level";
-
-  public static RiftData currentRift;
 
   public static final DimensionType RIFT_DIM_TYPE = DimensionType
       .register("torocraft_rifts", "_rifts", RIFT_DIM_ID, RiftsWorldProvider.class, true);

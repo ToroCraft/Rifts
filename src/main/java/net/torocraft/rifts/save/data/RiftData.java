@@ -2,7 +2,6 @@ package net.torocraft.rifts.save.data;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.torocraft.rifts.Rifts;
 import net.torocraft.torotraits.nbt.NbtField;
 import net.torocraft.torotraits.nbt.NbtSerializer;
 

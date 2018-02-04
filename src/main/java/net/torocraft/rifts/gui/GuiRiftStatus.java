@@ -3,11 +3,13 @@ package net.torocraft.rifts.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.save.data.RiftData;
 
 public class GuiRiftStatus extends Gui {
 
@@ -15,6 +17,7 @@ public class GuiRiftStatus extends Gui {
       new ResourceLocation(Rifts.MODID, "textures/gui/bars.png");
 
   private static final int BAR_WIDTH = 92;
+  public static RiftData data;
   private final Minecraft mc = Minecraft.getMinecraft();
 
   private int offsetX;
@@ -38,15 +41,18 @@ public class GuiRiftStatus extends Gui {
 
   private void draw() {
 
-    if (Rifts.currentRift == null) {
+    if (data == null) {
       return;
     }
 
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     mc.getTextureManager().bindTexture(GUI_BARS_TEXTURES);
 
-    renderBar(0, Color.GREEN, Rifts.currentRift.progress());
-    renderBar(5, Color.RED, Rifts.currentRift.time());
+    renderBar(10, Color.GREEN, data.progress());
+    renderBar(15, Color.RED, data.time());
+
+    String title = I18n.format("gui.rift_title", data.riftId, data.level);
+    mc.fontRenderer.drawStringWithShadow(title, offsetX, offsetY, 0xffffff);
   }
 
   private void renderBar(int y, Color color, float progress) {

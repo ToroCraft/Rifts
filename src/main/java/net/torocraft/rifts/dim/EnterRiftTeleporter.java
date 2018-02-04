@@ -6,6 +6,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
+import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.network.MessageSetRift;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
 import net.torocraft.rifts.save.data.RiftData;
 import net.torocraft.rifts.world.RiftUtil;
@@ -48,6 +50,10 @@ public class EnterRiftTeleporter extends Teleporter {
     if (entity instanceof EntityPlayerMP) {
       entity.sendMessage(new TextComponentString(
           "Welcome to Rift " + riftId + " a level " + data.level + " rift."));
+      //Timer.INSTANCE.addScheduledTask(() ->
+      Rifts.NETWORK.sendTo(new MessageSetRift(data), (EntityPlayerMP) entity);
+
+      //, 10);
     }
 
     return true;

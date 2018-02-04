@@ -3,3 +3,4 @@ item.cracked_rift_keystone.name=Cracked Rift Keystone
 item.rift_keystone.tooltip=Rift Level %s
 item.cracked_rift_keystone.tooltip=Rift %s
 item.rift_return_stone.name=Rift Return Stone
+gui.rift_title=Rift %s (level %s)

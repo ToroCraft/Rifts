@@ -6,6 +6,7 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.torocraft.rifts.Rifts;
+import net.torocraft.rifts.network.MessageSetRift;
 import net.torocraft.rifts.util.Timer;
 
 public class DimensionUtil {
@@ -19,7 +20,14 @@ public class DimensionUtil {
 
   public static void travelToOverworld(EntityPlayerMP player, int riftId) {
     Teleporter t = new LeaveRiftTeleporter(getWorld(player, OVERWORLD_DIM_ID), riftId);
-    Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, OVERWORLD_DIM_ID, t));
+    Timer.INSTANCE.addScheduledTask(() -> {
+      changePlayerDimension(player, OVERWORLD_DIM_ID, t);
+      clearRiftDataOnClient(player);
+    });
+  }
+
+  private static void clearRiftDataOnClient(EntityPlayerMP player) {
+    Rifts.NETWORK.sendTo(new MessageSetRift(null), player);
   }
 
   private static WorldServer getWorld(EntityPlayerMP player, int dimId) {

@@ -28,7 +28,6 @@ public class RiftsWorldSaveData extends WorldSavedData {
 
   public void saveRift(RiftData data) {
     saveData.rifts.put(data.riftId + "", data);
-    System.out.println("saved rift " + data.riftId);
     markDirty();
   }
 
@@ -66,14 +65,12 @@ public class RiftsWorldSaveData extends WorldSavedData {
   @Override
   public void readFromNBT(NBTTagCompound c) {
     saveData = new WorldData();
-    System.out.println("READ: " + c);
     NbtSerializer.read(c, saveData);
   }
 
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound c) {
     NbtSerializer.write(c, saveData);
-    System.out.println("WRITE: " + c);
     return c;
   }
 
