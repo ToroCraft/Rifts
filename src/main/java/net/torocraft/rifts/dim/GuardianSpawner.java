@@ -2,10 +2,17 @@ package net.torocraft.rifts.dim;
 
 import java.util.Random;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.torocraft.rifts.Rifts;
 import net.torocraft.rifts.RiftsConfig;
 import net.torocraft.rifts.entities.RiftGuardian;
 import net.torocraft.rifts.save.RiftWorldSaveDataAccessor;
@@ -34,8 +41,9 @@ public class GuardianSpawner {
     if (entity instanceof RiftGuardian) {
       ((RiftGuardian) entity).setRift(data);
     }
+    entity.addTag(Rifts.TAG_GUARDIAN);
     BlockPos pos = findPos(player, world, entity);
-    MobDecorator.decorate(entity, data.level);
+    setAttributes(entity, data.level);
     specialDefects(world, pos, () -> SpawnApi.spawn(world, entity, pos));
   }
 
@@ -47,6 +55,31 @@ public class GuardianSpawner {
       pos = player.getPosition();
     }
     return pos;
+  }
+
+  private static void setAttributes(EntityLiving entity, int level) {
+
+    double healthFactor = 2 + (level / 30d);
+    double attackFactor = 2 + (level / 40d);
+
+    for (IAttributeInstance attribute : entity.getAttributeMap().getAllAttributes()) {
+      if (attribute.getAttribute() == SharedMonsterAttributes.ATTACK_DAMAGE) {
+        attribute.setBaseValue(attribute.getAttributeValue() * attackFactor);
+      }
+
+      if (attribute.getAttribute() == SharedMonsterAttributes.MAX_HEALTH) {
+        attribute.setBaseValue(attribute.getAttributeValue() * healthFactor);
+        entity.setHealth(entity.getMaxHealth());
+      }
+    }
+
+    entity.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));
+    entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE));
+    entity.setItemStackToSlot(EntityEquipmentSlot.LEGS, new ItemStack(Items.DIAMOND_LEGGINGS));
+    entity.setItemStackToSlot(EntityEquipmentSlot.FEET, new ItemStack(Items.DIAMOND_BOOTS));
+
+    entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
+    entity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
   }
 
   private static void delay(int time, Runnable task) {

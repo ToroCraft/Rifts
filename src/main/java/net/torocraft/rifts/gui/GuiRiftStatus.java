@@ -41,7 +41,7 @@ public class GuiRiftStatus extends Gui {
 
   private void draw() {
 
-    if (data == null) {
+    if (data == null || !data.active) {
       return;
     }
 

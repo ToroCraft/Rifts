@@ -13,9 +13,6 @@ import net.torocraft.rifts.world.RiftUtil;
 @EventBusSubscriber
 public class ProgressHandler {
 
-  private static final int SPAWN_IN_RADIUS = 50;
-  private static final int MAX_ENTITIES_IN_AREA = 100;
-
   @SubscribeEvent
   public static void onXpPickup(LivingExperienceDropEvent event) {
     EntityPlayer player = event.getAttackingPlayer();
@@ -34,6 +31,5 @@ public class ProgressHandler {
     RiftWorldSaveDataAccessor.saveRift(player.world, data);
     DimensionUtil.syncPlayers(event.getAttackingPlayer(), data);
   }
-
 
 }

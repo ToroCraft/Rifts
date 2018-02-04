@@ -16,14 +16,25 @@ public class RiftTickHandler {
   public static void onPlayerTick(PlayerTickEvent event) {
     if (DimensionUtil.isRiftTick(event)) {
       RiftData data = loadPlayerRift(event.player);
-      if (data == null) {
+      if (data == null || !data.active) {
         return;
       }
       data.time++;
-      MobSpawner.spawnRiftMobsAroundPlayer(event.player, data);
+      handleGuardianSpawn(event, data);
+      if (!data.guardianSpawned) {
+        MobSpawner.spawnRiftMobsAroundPlayer(event.player, data);
+      }
       RiftWorldSaveDataAccessor.saveRift(event.player.world, data);
       DimensionUtil.syncPlayers(event.player, data);
     }
+  }
+
+  private static void handleGuardianSpawn(PlayerTickEvent event, RiftData data) {
+    if (data.guardianSpawned || data.progress() < 1) {
+      return;
+    }
+    GuardianSpawner.spawnRiftGuardianAroundPlayer(event.player);
+    data.guardianSpawned = true;
   }
 
   private static RiftData loadPlayerRift(EntityPlayer player) {

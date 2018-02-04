@@ -108,6 +108,9 @@ public class BlockRiftPortal extends BlockBreakable {
 
   private void collapseRift(World world, BlockPos pos) {
     RiftData data = RiftWorldSaveDataAccessor.findByPortalPosition(world, pos);
+    if (data == null) {
+      return;
+    }
     if (isPrimaryPortalBlock(pos, data)) {
       RiftWorldSaveDataAccessor.removeRift(world, data.riftId);
       dropKeyStone(world, pos, data);

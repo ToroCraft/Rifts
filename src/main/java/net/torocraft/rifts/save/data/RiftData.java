@@ -2,6 +2,7 @@ package net.torocraft.rifts.save.data;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.torocraft.torotraits.nbt.NbtField;
 import net.torocraft.torotraits.nbt.NbtSerializer;
 
@@ -39,14 +40,18 @@ public class RiftData {
   /**
    * when false, this data can be removed from world save
    */
+  @NbtField
   public boolean active = true;
 
+  @NbtField
+  public boolean guardianSpawned = false;
+
   public float progress() {
-    return progress / (float) COMPLETE_PROGRESS;
+    return MathHelper.clamp(progress / (float) COMPLETE_PROGRESS, 0, 1);
   }
 
   public float time() {
-    return 1 - (time / (float) COMPLETE_TIME);
+    return MathHelper.clamp(1 - (time / (float) COMPLETE_TIME), 0, 1);
   }
 
   public static RiftData random(int riftId) {
