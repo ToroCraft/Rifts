@@ -14,7 +14,7 @@ import net.torocraft.rifts.save.data.RiftData;
 
 public class EntityHuskRiftGuardian extends EntityHusk implements RiftGuardian {
 
-  public static String NAME = Rifts.MODID + "_husk";
+  public static String NAME = Rifts.MODID + "_husk_guardian";
 
   private static final String NBT_SCALE = Rifts.MODID + "_scale";
   private static final DataParameter<Float> SCALE = EntityDataManager

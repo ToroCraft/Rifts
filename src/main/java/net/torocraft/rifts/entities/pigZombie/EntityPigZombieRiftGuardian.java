@@ -14,7 +14,7 @@ import net.torocraft.rifts.save.data.RiftData;
 
 public class EntityPigZombieRiftGuardian extends EntityPigZombie implements RiftGuardian {
 
-  public static String NAME = Rifts.MODID + "_pig_zombie";
+  public static String NAME = Rifts.MODID + "_pig_zombie_guardian";
 
   private static final String NBT_SCALE = Rifts.MODID + "_scale";
   private static final DataParameter<Float> SCALE = EntityDataManager

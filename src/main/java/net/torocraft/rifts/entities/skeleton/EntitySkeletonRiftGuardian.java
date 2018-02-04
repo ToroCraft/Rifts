@@ -14,7 +14,7 @@ import net.torocraft.rifts.save.data.RiftData;
 
 public class EntitySkeletonRiftGuardian extends EntitySkeleton implements RiftGuardian {
 
-  public static String NAME = Rifts.MODID + "_skeleton";
+  public static String NAME = Rifts.MODID + "_skeleton_guardian";
 
   private static final String NBT_SCALE = Rifts.MODID + "_scale";
   private static final DataParameter<Float> SCALE = EntityDataManager
