@@ -59,8 +59,8 @@ public class GuardianSpawner {
 
   private static void setAttributes(EntityLiving entity, int level) {
 
-    double healthFactor = 2 + (level / 30d);
-    double attackFactor = 2 + (level / 40d);
+    double healthFactor = 1 + (level / 30d);
+    double attackFactor = 1 + (level / 40d);
 
     for (IAttributeInstance attribute : entity.getAttributeMap().getAllAttributes()) {
       if (attribute.getAttribute() == SharedMonsterAttributes.ATTACK_DAMAGE) {

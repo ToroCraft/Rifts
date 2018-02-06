@@ -3,6 +3,7 @@ package net.torocraft.rifts.entities;
 import net.torocraft.rifts.save.data.RiftData;
 
 public interface RiftGuardian {
+
   void setRift(RiftData data);
 
   float getScale();

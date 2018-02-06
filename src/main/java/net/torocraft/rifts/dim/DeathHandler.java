@@ -4,10 +4,9 @@ package net.torocraft.rifts.dim;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -21,9 +20,27 @@ import net.torocraft.rifts.world.RiftUtil;
 public class DeathHandler {
 
   @SubscribeEvent
-  public static void onGuardianDeath(LivingDeathEvent event) {
+  public static void onDeath(LivingDeathEvent event) {
+    if (event.getEntity().world.isRemote) {
+      return;
+    }
     if (isRiftGuardian(event.getEntity())) {
       onRiftGuardianDeath((EntityCreature) event.getEntity());
+    }
+    if (isWitch(event)) {
+      chanceToDropKeyStone((EntityCreature) event.getEntity());
+    }
+  }
+
+  private static boolean isWitch(LivingDeathEvent event) {
+    return event.getEntity() instanceof EntityWitch
+        && event.getEntity().dimension == 0;
+  }
+
+  private static void chanceToDropKeyStone(EntityCreature entity) {
+    int roll = entity.getRNG().nextInt(100);
+    if (roll > 80) {
+      dropKeystones(entity, 1, 1);
     }
   }
 
@@ -51,23 +68,23 @@ public class DeathHandler {
       keyStoneDropLevel = data.level + 1;
     }
 
-    dropKeystones(entity, keyStoneDropLevel);
+    int dropAmount = entity.getRNG().nextInt(3) + 2;
+    dropKeystones(entity, keyStoneDropLevel, dropAmount);
 
     data.active = false;
     data.guardianSpawned = true;
   }
 
-  private static void dropKeystones(EntityCreature guardian, int level) {
-    double x = guardian.posX;
-    double y = guardian.posY;
-    double z = guardian.posZ;
-    int roll = guardian.getRNG().nextInt(3) + 2;
-    ItemStack stack = new ItemStack(ItemRiftKeyStone.INSTANCE, roll);
+  private static void dropKeystones(EntityCreature fromEntity, int level, int amount) {
+    double x = fromEntity.posX;
+    double y = fromEntity.posY;
+    double z = fromEntity.posZ;
+    ItemStack stack = new ItemStack(ItemRiftKeyStone.INSTANCE, amount);
     NBTTagCompound c = new NBTTagCompound();
     c.setInteger(Rifts.NBT_RIFT_LEVEL, level);
     stack.setTagCompound(c);
-    EntityItem itemEntity = new EntityItem(guardian.world, x, y, z, stack);
-    guardian.world.spawnEntity(itemEntity);
+    EntityItem itemEntity = new EntityItem(fromEntity.world, x, y, z, stack);
+    fromEntity.world.spawnEntity(itemEntity);
   }
 
 }

@@ -8,8 +8,11 @@ import net.torocraft.torotraits.nbt.NbtSerializer;
 
 public class RiftData {
 
+  /**
+   * 120 rift ticks = 10 minutes
+   */
   public static final int COMPLETE_TIME = 120;
-  public static final int COMPLETE_PROGRESS = 300;
+  public static final int COMPLETE_PROGRESS = 1; //300;
 
   @NbtField
   public int riftId;
@@ -22,8 +25,6 @@ public class RiftData {
 
   /**
    * rift time in rift ticks (1/5sec)
-   *
-   * 10 minutes = 120 rift ticks
    */
   @NbtField
   public int time;

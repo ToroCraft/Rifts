@@ -3,6 +3,9 @@ package net.torocraft.rifts.dim;
 import java.lang.reflect.Field;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
@@ -22,7 +25,10 @@ public class DimensionUtil {
 
   public static void travelToRift(EntityPlayerMP player, int riftId) {
     Teleporter t = new EnterRiftTeleporter(getWorld(player, Rifts.RIFT_DIM_ID), riftId);
-    Timer.INSTANCE.addScheduledTask(() -> changePlayerDimension(player, Rifts.RIFT_DIM_ID, t));
+    Timer.INSTANCE.addScheduledTask(() -> {
+      changePlayerDimension(player, Rifts.RIFT_DIM_ID, t);
+      playSound(player, SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT);
+    });
   }
 
   public static void travelToOverworld(EntityPlayerMP player, int riftId) {
@@ -30,6 +36,7 @@ public class DimensionUtil {
     Timer.INSTANCE.addScheduledTask(() -> {
       changePlayerDimension(player, OVERWORLD_DIM_ID, t);
       clearRiftDataOnClient(player);
+      playSound(player, SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT);
     });
   }
 
@@ -130,5 +137,13 @@ public class DimensionUtil {
         RiftUtil.RIFT_DISTANCE
     );
     Rifts.NETWORK.sendToAllAround(new MessageRiftUpdate(data), point);
+  }
+
+  private static void playSound(EntityPlayer player, SoundEvent sound) {
+    player.world.playSound(null,
+        player.posX, player.posY, player.posZ,
+        sound,
+        SoundCategory.PLAYERS,
+        1.0F, 1.0F);
   }
 }

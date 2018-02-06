@@ -5,12 +5,15 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -68,7 +71,16 @@ public class ItemRiftReturnStone extends Item {
       DimensionUtil.travelToOverworld((EntityPlayerMP) player, riftId);
       return EnumActionResult.SUCCESS;
     }
+    playSound(player, SoundEvents.ENTITY_CREEPER_HURT);
     return EnumActionResult.FAIL;
+  }
+
+  private static void playSound(EntityPlayer player, SoundEvent sound) {
+    player.world.playSound(null,
+        player.posX, player.posY, player.posZ,
+        sound,
+        SoundCategory.PLAYERS,
+        1.0F, 1.0F);
   }
 
 }
