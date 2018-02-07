@@ -31,8 +31,8 @@ public class Rifts {
   public static final DimensionType RIFT_DIM_TYPE = DimensionType
       .register("torocraft_rifts", "_rifts", RIFT_DIM_ID, RiftsWorldProvider.class, true);
 
-  @SidedProxy(clientSide = "net.torocraft.rifts.ClientProxy")
-  public static CommonProxy proxy;
+  @SidedProxy(clientSide = "net.torocraft.rifts.ClientProxy", serverSide = "net.torocraft.rifts.ServerProxy")
+  public static CommonProxy PROXY;
 
   @Instance(value = Rifts.MODID)
   public static Rifts INSTANCE;
@@ -43,17 +43,17 @@ public class Rifts {
 
   @EventHandler
   public void preInit(FMLPreInitializationEvent e) {
-    proxy.preInit(e);
+    PROXY.preInit(e);
   }
 
   @EventHandler
   public void init(FMLInitializationEvent e) {
-    proxy.init(e);
+    PROXY.init(e);
   }
 
   @EventHandler
   public void postInit(FMLPostInitializationEvent e) {
-    proxy.postInit(e);
+    PROXY.postInit(e);
   }
 
   @EventHandler

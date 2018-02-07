@@ -9,8 +9,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.torocraft.rifts.entities.Entities;
 import net.torocraft.rifts.network.MessageRiftUpdate;
 import net.torocraft.rifts.network.MessageSetRift;
+import net.torocraft.rifts.save.data.RiftData;
 
-public class CommonProxy {
+public abstract class CommonProxy {
 
   public void preInit(FMLPreInitializationEvent e) {
     initConfig(e.getSuggestedConfigurationFile());
@@ -31,5 +32,9 @@ public class CommonProxy {
   private void initConfig(File configFile) {
     RiftsConfig.init(configFile);
     MinecraftForge.EVENT_BUS.register(new RiftsConfig());
+  }
+
+  public void updateRiftOnClient(RiftData data) {
+
   }
 }
